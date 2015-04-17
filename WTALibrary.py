@@ -25,13 +25,17 @@ def CrearPermutaciones(vector, n):
 def ConvertirenWTA(listaVectores, Permutaciones, n, k, w):
 	arrFinal = []
 	Waux = n / w
-	for auxFinal in range(len(listaVectores)):
-		# convwta=wtahash.wtahash(listaVectores[auxFinal],15,600)
+	cant_vectores = len(listaVectores)
+	for i in range(cant_vectores):
+		# convwta=wtahash.wtahash(listaVectores[i],15,600)
 		# entregar K, N y W. Ojo que el W esta un poco distinto al paper pero
 		# hace lo mismo si W=3 lo divide en 3 , no en partes de 3 bits solo hay
 		# que calcular cuantas partes quedan y poner eso como W
-		convwta = wtahash(listaVectores[auxFinal], k, n, Waux, Permutaciones) 
+		convwta = wtahash(listaVectores[i], k, n, Waux, Permutaciones) 
 		arrFinal.append(convwta)
+		print (
+			"Vector numero {0} de {1} convertido a WTA".format(i, cant_vectores)
+		)
 	return arrFinal
 
 def wtahash(vector, k, n, w, permutaciones):
@@ -46,32 +50,33 @@ def wtahash(vector, k, n, w, permutaciones):
 		maximales.append([0])
 	indice_del_mayor = 0
 
-	for numero in range(n):
+	for i in range(n):
 		# Hace la transformacion
 		for conteo in range(k):
-		    answers[numero].append(vector[base[numero][conteo]])
-		    if answers[numero][conteo] > maximales[numero][0]:
+		    answers[i].append(vector[base[i][conteo]])
+		    if answers[i][conteo] > maximales[i][0]:
 		    	# maximales solo seria de la forma [... ,[0], ...] ->
-		    	#  0   numero   n
+		    	#  0   i   n
 		    	# [..., [12], ...] -> [..., [20], ...]
-		    	maximales[numero][0] = answers[numero][conteo]
+		    	maximales[i][0] = answers[i][conteo]
 		    	indice_del_mayor = conteo
 
 		L = map(int, bin(indice_del_mayor)[2:])
 		L = deterLargo(k, L)
 		#Se convierte en binario y luego se da vuelta por el left-bitmost
 		binario.append(L[::-1])
-
-		binariofinal = binariofinal + binario[numero]
+		# Concatenacion de arreglos
+		binariofinal = binariofinal + binario[i]
 		indice_del_mayor = 0
 	#          0                           n
 	# w = 4, [00110010, 10010001, ..., 01101011]
 	#          0                                            w x n
 	# -> [array[0011], array[0010], array[1001], array[0001], ...]
+
+	# OJO para w = 2 y n = 4096 el largo de auxsplit es 2048
 	auxsplit = numpy.array_split(binariofinal, w)
 	list1 = []
 
-	print("Largo de auxsplit es : {0}".format(len(auxsplit)))
 	for auxlist in range(len(auxsplit)):
 		list1.append(auxsplit[auxlist].tolist())
 	# -> list1 = [[0, 0, 1, 1], [0, 0, 1, 0], [1, 0, 0, 1], [0, 0, 0, 1],  ...]
@@ -128,6 +133,7 @@ def CrearTablaHash(ClasificadoresBit, ClasificadoresWTA):
 	numeroBandas = len(ClasificadoresBit[0])
 	# Creo que esto seria como hacer len(0) o len(1)
 	numeroElementos = len(ClasificadoresWTA[0][0])
+	# Esto da 8 para n = 1200, con 200 clasificadores, k = 16 y w = 2
 	print("numeroElementos es : {0}".format(numeroElementos))
 	indicemayor = int(math.pow(2, numeroElementos))
 	Indices = []

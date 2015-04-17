@@ -21,9 +21,10 @@ class WTAHash:
 	# los clasificadores y los valores de n, k y w de WTA
 	def __init__(self, path, n, k, w):
 		classifiers = self.load_classifiers(path)
+		print ("Se termino de leer el archivo, creando tabla de hash")
 		self.permutations = wta.CrearPermutaciones(classifiers[0], n)
-		ConvWTAClas = \
-			wta.ConvertirenWTA(classifiers, self.permutations, n, k, w)
+		print ("Permutaciones creadas, convirtiendo en WTA")
+		ConvWTAClas = wta.ConvertirenWTA(classifiers, self.permutations, n, k, w)
 		self.classifiersBW = wta.GetinBinaryMayor(ConvWTAClas)
 		self.whash = wta.CrearTablaHash(self.classifiersBW, ConvWTAClas)
 		
