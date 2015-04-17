@@ -1,0 +1,3 @@
+- Medir tiempo de creacion de tabla
+- En que posicion salen los mismos datos
+- Tiempo en encontrar el mas cercano
