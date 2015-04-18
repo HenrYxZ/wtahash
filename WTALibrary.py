@@ -33,9 +33,11 @@ def ConvertirenWTA(listaVectores, Permutaciones, n, k, w):
 		# que calcular cuantas partes quedan y poner eso como W
 		convwta = wtahash(listaVectores[i], k, n, Waux, Permutaciones) 
 		arrFinal.append(convwta)
-		print (
-			"Vector numero {0} de {1} convertido a WTA".format(i, cant_vectores)
-		)
+		step = (cant_vectores * 5) /100
+		if i % step == 0:
+			print (
+				"Vector numero {0} de {1} convertido a WTA".format(i, cant_vectores)
+			)
 	return arrFinal
 
 def wtahash(vector, k, n, w, permutaciones):
@@ -200,15 +202,20 @@ def FindBestClassifiers(TodosVEctoresWTAClasif, WTA1Imagen, TabladeHash):
 
 def ObtenerValoresTotalesWTA(listWTAClasif, listWTAImagenes, tablahash):
 	listaValoresWTAClasif = []
+	total_time = 0
 	for auxWTAimagenes in range(len(listWTAImagenes)):
 		start = time.time()
 		auxWTAIndice = FindBestClassifiers(
 			listWTAClasif,listWTAImagenes[auxWTAimagenes],tablahash
 		)
 		end = time.time()
+		elapsed_time = end - start
+		total_time = total_time + elapsed_time
 		s = "Elapsed time in finding best classifiers for row {0} is {1}".format(
-			auxWTAimagenes, end - start
+			auxWTAimagenes, elapsed_time
 		)
 		print (s)
 		listaValoresWTAClasif.append(auxWTAIndice)
+	avg_time = total_time / float(len(listWTAImagenes))
+	print ("Average time in finding best classifiers is {0}".format(avg_time))
 	return listaValoresWTAClasif

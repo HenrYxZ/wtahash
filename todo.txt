@@ -1,3 +1,8 @@
-- Medir tiempo de creacion de tabla
+- Medir tiempo de creacion de tabla = 679.491914034 segs para airplane
 - En que posicion salen los mismos datos
-- Tiempo en encontrar el mas cercano
+- Tiempo en encontrar el mas cercano = 932.512481928
+
+
+Codigo
+
+mostrar avance por porcentajes
