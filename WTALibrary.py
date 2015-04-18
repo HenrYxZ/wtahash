@@ -134,7 +134,6 @@ def CrearTablaHash(ClasificadoresBit, ClasificadoresWTA):
 	# Creo que esto seria como hacer len(0) o len(1)
 	numeroElementos = len(ClasificadoresWTA[0][0])
 	# Esto da 8 para n = 1200, con 200 clasificadores, k = 16 y w = 2
-	print("numeroElementos es : {0}".format(numeroElementos))
 	indicemayor = int(math.pow(2, numeroElementos))
 	Indices = []
 
@@ -202,8 +201,14 @@ def FindBestClassifiers(TodosVEctoresWTAClasif, WTA1Imagen, TabladeHash):
 def ObtenerValoresTotalesWTA(listWTAClasif, listWTAImagenes, tablahash):
 	listaValoresWTAClasif = []
 	for auxWTAimagenes in range(len(listWTAImagenes)):
+		start = time.time()
 		auxWTAIndice = FindBestClassifiers(
 			listWTAClasif,listWTAImagenes[auxWTAimagenes],tablahash
 		)
+		end = time.time()
+		s = "Elapsed time in finding best classifiers for row {0} is {1}".format(
+			auxWTAimagenes, end - start
+		)
+		print (s)
 		listaValoresWTAClasif.append(auxWTAIndice)
 	return listaValoresWTAClasif
