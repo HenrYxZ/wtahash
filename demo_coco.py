@@ -71,7 +71,8 @@ def main():
 	times_filename = "results.txt"
 	print ("Writing results in {0} ...".format(times_filename))
 	f = open(times_filename, "w")
-	s = "Time for generating the table {0}.\n"
+	s += "Results using k={0} and w={1}.\n".format(k, w)
+	s += "Time for generating the table {0}.\n"
 	s	+= "Total time for finding best {1}.\n".format(table_time, find_time)
 	s += "Histogram results: {0}\n".format(positions_hist)
 	s += "separators percentages used: {0}.".format(separators)
