@@ -36,7 +36,7 @@ def ConvertirenWTA(listaVectores, Permutaciones, n, k, w):
 		step = (cant_vectores * 5) /100
 		if i % step == 0:
 			print (
-				"Vector numero {0} de {1} convertido a WTA".format(i, cant_vectores)
+				"Vector number {0} of {1} converted to WTA".format(i, cant_vectores)
 			)
 	return arrFinal
 
