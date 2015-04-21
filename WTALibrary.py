@@ -35,8 +35,11 @@ def ConvertirenWTA(listaVectores, Permutaciones, n, k, w):
 		arrFinal.append(convwta)
 		step = (cant_vectores * 5) /100
 		if i % step == 0:
+			porcentaje = i * 100 / cant_vectores + 1
 			print (
-				"Vector number {0} of {1} converted to WTA".format(i, cant_vectores)
+				"Vector number {0} of {1} ({2}%) converted to WTA".format(
+					i, cant_vectores, porcentaje
+				)
 			)
 	return arrFinal
 
@@ -189,7 +192,7 @@ def FindBestClassifiers(TodosVEctoresWTAClasif, WTA1Imagen, TabladeHash):
 		#while(329 > auxSort2):
 		MayorMomentaneo = AuxSort[auxSort2]
 		if Ayuda == MayorMomentaneo:
-			Index24 = ArregloVAcioClasif.index(MayorMomentaneo,AyudaIndex+1)
+			Index24 = ArregloVAcioClasif.index(MayorMomentaneo, AyudaIndex + 1)
 			Ayuda = MayorMomentaneo
 			AyudaIndex = Index24
 			ClasificadoresTop.append(Index24)
@@ -206,15 +209,19 @@ def ObtenerValoresTotalesWTA(listWTAClasif, listWTAImagenes, tablahash):
 	for auxWTAimagenes in range(len(listWTAImagenes)):
 		start = time.time()
 		auxWTAIndice = FindBestClassifiers(
-			listWTAClasif,listWTAImagenes[auxWTAimagenes],tablahash
+			listWTAClasif, listWTAImagenes[auxWTAimagenes], tablahash
 		)
 		end = time.time()
 		elapsed_time = end - start
 		total_time = total_time + elapsed_time
-		s = "Elapsed time in finding best classifiers for row {0} is {1}".format(
-			auxWTAimagenes, elapsed_time
-		)
-		print (s)
+		step = len(listWTAImagenes) * 5 / 100
+		if auxWTAimagenes % step == 0:
+			s = "Elapsed time in finding best classifiers for row {0} is {1}".format(
+				auxWTAimagenes, elapsed_time
+			)
+			print (s)
+			porcentaje = (auxWTAimagenes * 100 / len(listWTAImagenes)) + 1
+			print ("Loading ... {0}%".format(porcentaje))
 		listaValoresWTAClasif.append(auxWTAIndice)
 	avg_time = total_time / float(len(listWTAImagenes))
 	print ("Average time in finding best classifiers is {0}".format(avg_time))

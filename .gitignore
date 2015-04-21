@@ -1,6 +1,7 @@
 # Data files
 *.csv
 airplane/
+results.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

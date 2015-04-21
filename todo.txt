@@ -6,3 +6,13 @@
 Codigo
 
 mostrar avance por porcentajes
+
+k = 4
+w = 2
+1. 628.132664919
+3. 
+
+k = 16
+w = 2
+1. 1043.38067484
+3. 

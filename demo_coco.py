@@ -40,11 +40,6 @@ def main():
 	end = time.time()
 	find_time = end - start
 	print ("Total time on best classifiers matrix {0}".format(find_time))
-	
-	# results_filename = "results.csv"
-	# print ("Writing results in {0} ...".format(results_filename))
-	# np.savetxt(results_filename, results, delimiter=",")
-
 
 	####             Generate histogram for the correct ranking
 	# ----------------------------------------------------------------------------
@@ -59,7 +54,8 @@ def main():
 
 	for row in range(len(results)):
 		for col in range(len(results[row])):
-			if results[row, col] == row:
+			if results[row][col] == row:
+				print ("match with value {0}".format(row))
 				position = col
 				percentage = position / len(results)
 				for index in range(len(separators)):
@@ -71,12 +67,12 @@ def main():
 	times_filename = "results.txt"
 	print ("Writing results in {0} ...".format(times_filename))
 	f = open(times_filename, "w")
-	s += "Results using k={0} and w={1}.\n".format(k, w)
-	s += "Time for generating the table {0}.\n"
-	s	+= "Total time for finding best {1}.\n".format(table_time, find_time)
+	s = "Results using k={0} and w={1}.\n".format(k, w)
+	s += "Time for generating the table {0}.\n".format(table_time)
+	s	+= "Total time for finding best {0}.\n".format(find_time)
 	s += "Histogram results: {0}\n".format(positions_hist)
 	s += "separators percentages used: {0}.".format(separators)
-
+	print (s)
 	f.write(s)
 	f.close()
 	
