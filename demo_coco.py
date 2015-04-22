@@ -47,27 +47,29 @@ def main():
 	print ("Generating histogram of correct ranking classification")
 	# This is the histogram for correspondences between object and the rank given
 	# to its hash. The first part is for classification when the object was ranked
-	# in the first 1%, then between 1 and 5%, then between 5 and 10%, then 10 and 
-	# 25%, then 25 to 50%, 50 to 75% and finally in the last 50% of the ranking.
+	# first, then in the first 5%, then between 5 and 10%, then 10 and 25%, then
+	# 25 to 50%, 50 to 75% and finally in the last 50% of the ranking.
 	positions_hist = [0, 0, 0, 0, 0, 0, 0]
-	separators = [0.01, 0.05, 0.1, 0.25, 0.5, 0.75]
+	separators = [0.05, 0.1, 0.25, 0.5, 0.75]
 
 	for row in range(len(results)):
 		for col in range(len(results[row])):
 			if results[row][col] == row:
-				print ("match with value {0}".format(row))
 				position = col
-				percentage = position / len(results)
-				for index in range(len(separators)):
-					if percentage < separators[index]:
-						positions_hist[index] += 1
-					break
+				if position == 0:
+					positions_hist[0] += 1
+				else:
+					percentage = position / len(results)
+					for index in range(len(separators)):
+						if percentage < separators[index]:
+							positions_hist[index + 1] += 1
+						break
 				break
 
 	times_filename = "results.txt"
 	print ("Writing results in {0} ...".format(times_filename))
 	f = open(times_filename, "w")
-	s = "Results using k={0} and w={1}.\n".format(k, w)
+	s = "Results using k = {0} and w = {1}.\n".format(k, w)
 	s += "Time for generating the table {0}.\n".format(table_time)
 	s	+= "Total time for finding best {0}.\n".format(find_time)
 	s += "Histogram results: {0}\n".format(positions_hist)
