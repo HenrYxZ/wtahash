@@ -18,7 +18,7 @@ def main():
 	###                        Load information matrix                       ###
 	############################################################################
 
-	n = 4096
+	n = 1200
 	classifiers_count = 2786
 	filename = "airplane_feats.csv"
 

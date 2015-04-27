@@ -134,9 +134,8 @@ def GetinBinaryMayor(ArregloListo):
 	return newVectorTotal
 
 def CrearTablaHash(ClasificadoresBit, ClasificadoresWTA):
-	numeroClasificadores = len(ClasificadoresBit)
-	numeroBandas = len(ClasificadoresBit[0])
-	# Creo que esto seria como hacer len(0) o len(1)
+	numeroClasificadores = len(ClasificadoresBit) # ej. 2786
+	numeroBandas = len(ClasificadoresBit[0]) # w x n
 	numeroElementos = len(ClasificadoresWTA[0][0])
 	# Esto da 8 para n = 1200, con 200 clasificadores, k = 16 y w = 2
 	indicemayor = int(math.pow(2, numeroElementos))
@@ -178,29 +177,24 @@ def FindBestClassifiers(TodosVEctoresWTAClasif, WTA1Imagen, TabladeHash):
 
 		for auxNumVecClasif in range(len(ArregloClasificadoresPresentes)):
 			clasificador = ArregloClasificadoresPresentes[auxNumVecClasif]
-			ArregloVAcioClasif[clasificador - 1] = \
-				ArregloVAcioClasif[clasificador - 1] + 1
+			ArregloVAcioClasif[clasificador - 1] += 1
 
 	AuxSort = ArregloVAcioClasif[:]
 	AuxSort.sort(reverse = True)
 	auxSort2 = 0
 	Ayuda = 99999
-	AyudaIndex = 999999
 	ClasificadoresTop = []
 	#print AuxSort
 	for auxSort2 in range(len(TodosVEctoresWTAClasif)):
 		#while(329 > auxSort2):
 		MayorMomentaneo = AuxSort[auxSort2]
 		if Ayuda == MayorMomentaneo:
-			Index24 = ArregloVAcioClasif.index(MayorMomentaneo, AyudaIndex + 1)
-			Ayuda = MayorMomentaneo
-			AyudaIndex = Index24
+			Index24 = ArregloVAcioClasif.index(MayorMomentaneo, Index24 + 1)
 			ClasificadoresTop.append(Index24)
 		else:
 			Index24 = ArregloVAcioClasif.index(MayorMomentaneo)
 			ClasificadoresTop.append(Index24)			
 			Ayuda = MayorMomentaneo
-			AyudaIndex = Index24
 	return ClasificadoresTop	
 
 def ObtenerValoresTotalesWTA(listWTAClasif, listWTAImagenes, tablahash):
