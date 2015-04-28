@@ -3,36 +3,61 @@ import glob
 import numpy as np
 
 
-'''Loads the objects for training and testing a class in the MSCoco dataset.
+'''Loads the objects for a class in the MSCoco dataset.
 
 Args:
     training_percentage (int): Number from 0 to 100. The percentage of the files
         that will be used in the training set, the rest will be in the testing.
     class_name (string): Name of the class that will be loaded (e.g. "airplane")
+    set_name (string): It can be training or testing
 
 Returns:
-    np.array: objects for the training set
-    np.array: objects for the testing set
+    np.array float: objects for the set
 '''
-def load_class(training_percentage, class_name):
-    path = "/mnt/nas/GrimaRepo/datasets/mscoco/coco2014/crops/cropsFeats/"
-    files = glob.glob("{0}/{1}/*.mat".format())
-    train = None
-    test = None
+def load_class(training_percentage, path, set_name):
+    files = glob.glob("{0}/*.mat".format(path))
+    objects = None
     training_count = (len(files) * training_percentage) / 100
-    for i in range(len(files)):
+    if set_name == "training":
+        my_range = range(training_count)
+    else:
+        my_range = range(training_count, len(files))
+    for i in my_range:
+        print "i = {0}".format(i)
         f = files[i]
         data = sio.loadmat(f)
         features = data["stored"]
-        if i < training_count:
-            if train is None:
-                train = features
-            else:
-                train = np.vstack(train, features)
+        if objects is None:
+            objects = features
         else:
-            if test is None:
-                test = features
-            else:
-                test = np.vstack(test, features)
+            objects = np.vstack(objects, features)
+    print ("Done getting the objects from the class {0}".format(class_name))
+    print ("Objects matrix of shape = {0}".format(objects.shape))
+    return objects
 
-    return [train, test]
+'''Loads the objects for all the classes in the MSCoco dataset.
+
+Args:
+    training_percentage (int): Number from 0 to 100. The percentage of the files
+        that will be used in the training set, the rest will be in the testing.
+    set_name (string): It can be training or testing
+
+Returns:
+    np.array float: objects for the set
+'''
+def load_classes(training_percentage, path, set_name):
+    folders = glob.glob("{0}/*".format(path))
+    objects = None
+    # For each folder get the objects of that class
+    for i in range(len(folders)):
+        full_path = path + "/" + folders[i]
+        this_class = load_class(training_percentage, full_path, set_name)
+        if objects == None:
+            objects = this_class
+        else:
+            objects = np.vstack(objects, this_class)
+    print (
+        "Done getting the objects from all the classes, final matrix of shape "\
+        "= {0}".format(objects.shape)
+    )
+    return objects

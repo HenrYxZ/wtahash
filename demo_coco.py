@@ -2,7 +2,6 @@
 2015 Hernaldo Jesus Henriquez
 '''
 
-from random_data import RandomDataGenerator
 from wtahash import WTAHash
 import time
 import numpy as np
