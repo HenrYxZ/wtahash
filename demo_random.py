@@ -8,6 +8,7 @@ def main():
 	###                        Create random matrix                          ###
 	############################################################################
 
+	D = 4096
 	n = 1200
 	classifiers_count = 200
 	min_number = 0
@@ -24,7 +25,7 @@ def main():
 	###                        Use WTAHash on it                             ###
 	############################################################################
 
-	k = 15
+	k = 16
 	# se necesitan 4 bits para formar numeros del 0 al 15
 	# se dividen en 2?
 	w = 2

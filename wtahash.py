@@ -20,17 +20,11 @@ class WTAHash:
 
 	# Crea la estructura WTAHash, recibe como parámetro el path del archivo con
 	# los clasificadores y los valores de n, k y w de WTA
-	def __init__(self, path, n, k, w):
-		if path is "cluster-coco":
-			path = "/mnt/nas/GrimaRepo/datasets/mscoco/coco2014/crops/"\
-				"cropsFeats"
-			classifiers = cluster.load_classes(80, path,"training")
-		else:
-			classifiers = self.load_classifiers(path)
-			print ("Done reading the input file, now creating hash table")
-		self.permutations = wta.CrearPermutaciones(classifiers[0], n)
+	def __init__(self, objects, n, k, w):
+		# classifiers = self.load_classifiers(path)
+		self.permutations = wta.CrearPermutaciones(objects[0], n)
 		print ("Permutations ready, converting to WTA")
-		ConvWTAClas = wta.ConvertirenWTA(classifiers, self.permutations, n, k, w)
+		ConvWTAClas = wta.ConvertirenWTA(objects, self.permutations, n, k, w)
 		self.classifiersBW = wta.GetinBinaryMayor(ConvWTAClas)
 		self.whash = wta.CrearTablaHash(self.classifiersBW, ConvWTAClas)
 		

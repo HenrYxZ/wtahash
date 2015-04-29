@@ -210,10 +210,6 @@ def ObtenerValoresTotalesWTA(listWTAClasif, listWTAImagenes, tablahash):
 		total_time = total_time + elapsed_time
 		step = len(listWTAImagenes) * 5 / 100
 		if auxWTAimagenes % step == 0:
-			s = "Elapsed time in finding best classifiers for row {0} is {1}".format(
-				auxWTAimagenes, elapsed_time
-			)
-			print (s)
 			porcentaje = (auxWTAimagenes * 100 / len(listWTAImagenes)) + 1
 			print ("Loading ... {0}%".format(porcentaje))
 		listaValoresWTAClasif.append(auxWTAIndice)
