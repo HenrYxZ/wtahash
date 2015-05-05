@@ -1,7 +1,6 @@
 import scipy.io as sio
 import glob
 import numpy as np
-import time
 
 
 '''Loads the objects for a class in the MSCoco dataset.
@@ -17,7 +16,6 @@ Returns:
 '''
 def load_class(training_percentage, path, set_name):
     print ("path = {0}".format(path))
-    start = time.time()
     files = glob.glob("{0}/*.mat".format(path))
     objects = None
     training_count = (len(files) * training_percentage) / 100
@@ -34,10 +32,8 @@ def load_class(training_percentage, path, set_name):
             objects = features
         else:
             objects = np.vstack((objects, features))
-    end = time.time()
     print ("Done getting the objects from {0}".format(path))
     print ("Objects matrix of shape = {0}".format(objects.shape))
-    print ("Elapsed time loading was {0} seconds".format(end - start))
     return objects
 
 '''Loads the objects for all the classes in the MSCoco dataset.

@@ -16,7 +16,7 @@ def main():
     path = "/mnt/nas/GrimaRepo/datasets/mscoco/coco2014/crops/cropsFeats/airplane"
     print ("Reading training instances ...")
     start = time.time()
-    cluster.load_class(80, path, "training")
+    objects = cluster.load_class(80, path, "training")
     end = time.time()
     print ("Elapsed time reading the instances files {0}".format(end - start))
 
@@ -34,7 +34,7 @@ def main():
     # Save the hash in a cPickle file
     print ("Starting to write the hash in a file ...")
     start = time.time()
-    pickle.dump(wta_hash, open("/user/hjhenriq/hash.obj", "wb"))
+    pickle.dump(wta_hash, open("/user/hjhenriq/wtahash/hash.obj", "wb"))
     end = time.time()
     print ("Elapsed time writing the hash file {0}".format(end - start))
 
