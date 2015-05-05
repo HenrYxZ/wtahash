@@ -51,6 +51,7 @@ Returns:
 '''
 def load_classes(training_percentage, path, set_name):
     folders = glob.glob("{0}/*".format(path))
+    folders.sort()
     objects = None
     # For each folder get the objects of that class
     for i in range(len(folders)):
