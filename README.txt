@@ -27,6 +27,7 @@ serializar y deserializar (se puede utilizar cPickle por ejemplo)
 Carpeta en cluster de MS - COCO
 
 /mnt/nas/GrimaRepo/datasets/mscoco/coco2014/crops/cropsFeats
+
 270.000 archivos .mat de dimension (D) = 4.096, 72 clases
 1.105.920.000 floats de ¿32 bit? = 4 bytes en la matriz de datos de 270000x4096.
 1.080.000 kbytes

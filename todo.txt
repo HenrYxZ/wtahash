@@ -5,6 +5,14 @@
 carpeta en cluster de MS - COCO
 /mnt/nas/GrimaRepo/datasets/mscoco/coco2014/crops/cropsFeats
 
+Correr en el cluster
+
+$ screen -S hashing
+$ python demo_cluster.py &
+- salir
+$ screen -r ?
+$ jobs
+$ fg %1
 
 Codigo
 

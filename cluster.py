@@ -8,7 +8,8 @@ import numpy as np
 Args:
     training_percentage (int): Number from 0 to 100. The percentage of the files
         that will be used in the training set, the rest will be in the testing.
-    class_name (string): Name of the class that will be loaded (e.g. "airplane")
+    path (string): Path to the object files 
+        (e.g. "/coco2014/crops/cropsFeats/airplane")
     set_name (string): It can be training or testing
 
 Returns:
@@ -41,6 +42,8 @@ def load_class(training_percentage, path, set_name):
 Args:
     training_percentage (int): Number from 0 to 100. The percentage of the files
         that will be used in the training set, the rest will be in the testing.
+    path (string): Path to the folder containing all the classes
+        (eg. /coco2014/crops/cropsFeats)
     set_name (string): It can be training or testing
 
 Returns:
