@@ -54,7 +54,7 @@ def load_classes(training_percentage, path, set_name):
     objects = None
     # For each folder get the objects of that class
     for i in range(len(folders)):
-        full_path = path + "/" + folders[i]
+        full_path = folders[i]
         this_class = load_class(training_percentage, full_path, set_name)
         if objects == None:
             objects = this_class
