@@ -2,6 +2,9 @@
 - En que posicion salen los mismos datos
 - Tiempo en encontrar el mas cercano = 932.512481928
 
+carpeta en cluster de MS - COCO
+/mnt/nas/GrimaRepo/datasets/mscoco/coco2014/crops/cropsFeats
+
 
 Codigo
 
