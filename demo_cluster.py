@@ -5,8 +5,8 @@ import cluster
 import cPickle as pickle
 
 def main():
-    k = input("Welcome, introduce the number for k = ")
-    w = input("Now introduce the number for w = ")
+    k = 16
+    w = 2
     n = 1200
 
 
