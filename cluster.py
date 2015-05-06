@@ -28,7 +28,7 @@ def load_class(training_percentage, path, set_name):
     for i in my_range:
         f = files[i]
         data = sio.loadmat(f)
-        features = data["stored"]
+        features = np.array(data["stored"], dtype=np.float32)
         if objects is None:
             objects = features
         else:
@@ -54,7 +54,9 @@ def load_classes(training_percentage, path, set_name):
     folders.sort()
     objects = None
     # For each folder get the objects of that class
-    for i in range(len(folders)):
+    # DEBUGGING ONLY USE 10 CLASSES
+    # for i in range(len(folders)):
+    for i in range(10):
         full_path = folders[i]
         this_class = load_class(training_percentage, full_path, set_name)
         if objects == None:

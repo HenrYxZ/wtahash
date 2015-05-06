@@ -7,10 +7,13 @@ carpeta en cluster de MS - COCO
 
 Correr en el cluster
 
+$ ssh user@hercules.ing.puc.cl
+$ ssh otroserver
 $ screen -S hashing
 $ python demo_cluster.py &
 - salir
-$ screen -r ?
+
+$ screen -r
 $ jobs
 $ fg %1
 

@@ -5,8 +5,6 @@ import random
 import math
 import time
 import numpy
-# import wtahash
-import cPickle as pickle
 
 def CrearPermutaciones(vector, n):
 	numero = 0
@@ -211,7 +209,11 @@ def ObtenerValoresTotalesWTA(listWTAClasif, listWTAImagenes, tablahash):
 		step = len(listWTAImagenes) * 5 / 100
 		if auxWTAimagenes % step == 0:
 			porcentaje = (auxWTAimagenes * 100 / len(listWTAImagenes)) + 1
-			print ("Loading ... {0}%".format(porcentaje))
+			print (
+				"Loading vector {0} of {1}... {2}%".format(
+					auxWTAimagenes, len(listWTAImagenes), porcentaje
+				)
+			)
 		listaValoresWTAClasif.append(auxWTAIndice)
 	avg_time = total_time / float(len(listWTAImagenes))
 	print ("Average time in finding best classifiers is {0}".format(avg_time))
