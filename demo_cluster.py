@@ -9,6 +9,8 @@ def main():
     w = 2
     n = 1200
     results = ""
+    # Percentage of the data that will be used for training, the rest is testing
+    training_percentage = 80
 
     ###                  Load training information matrix                    ###
     ###----------------------------------------------------------------------###
@@ -16,38 +18,98 @@ def main():
     path = "/mnt/nas/GrimaRepo/datasets/mscoco/coco2014/crops/cropsFeats"
     print ("Reading training instances ...")
     start = time.time()
-    objects = cluster.load_classes(80, path, "training")
+    train_data = cluster.load_classes(training_percentage, path, "training")
     end = time.time()
-    s = "Elapsed time reading the instances files {0}".format(end - start)
+    results += "Training matrix of shape {0}".format(train_data.shape) + "\n"
+    s = "Elapsed time reading the training files: {0}".format(end - start)
     results += s + "\n"
     print (s)
 
     
-    ###                        Use WTAHash on it                             ###
+    # ###                        Use WTAHash on it                             ###
+    # ###----------------------------------------------------------------------###
+    
+    # print ("Starting to generate hash table ...")
+    # start = time.time()
+    # wta_hash = wh.WTAHash(train_data, n, k, w)
+    # end = time.time()
+    # table_time = end - start
+    # s = "Elapsed time on generation of hash table: {0}".format(table_time)
+    # results += s + "\n"
+    # print (s)
+
+    # # Save the hash in a cPickle file
+    # print ("Starting to write the hash in a file ...")
+    # start = time.time()
+    # with open("/user/hjhenriq/wtahash/hash.obj", "wb") as f:
+    #     pickle.dump(wta_hash, f)
+    # end = time.time()
+    # s = "Elapsed time writing the hash file: {0}".format(end - start)
+    # results += s + "\n"
+    # print (s)
+
+    ###                    Load testing information matrix                   ###
     ###----------------------------------------------------------------------###
-    
-    print ("Starting to generate hash table ...")
+
+    print ("Reading testing instances ...")
     start = time.time()
-    wta_hash = wh.WTAHash(objects, n, k, w)
+    test_data = cluster.load_classes(training_percentage, path, "testing")
     end = time.time()
-    table_time = end - start
-    s = "Elapsed time on generation of hash table {0}".format(table_time)
+    results += "Testing matrix of shape {0}".format(test_data.shape) + "\n"
+    s = "Elapsed time reading the testing files: {0}".format(end - start)
     results += s + "\n"
     print (s)
 
-    # Save the hash in a cPickle file
-    print ("Starting to write the hash in a file ...")
+    ###                   Load wtahash object with pickle                    ###
+    ###----------------------------------------------------------------------###
+
+    print ("Loading wtahash object from file ...")
     start = time.time()
-    with open("/user/hjhenriq/wtahash/hash.obj", "wb") as f:
-        pickle.dump(wta_hash, f)
+    with open("/user/hjhenriq/wtahash/hash.obj", "rb") as f:
+        wta_hash = pickle.load(f)
     end = time.time()
-    s = "Elapsed time writing the hash file {0}".format(end - start)
+    s = "Elapsed time loading the wtahash file: {0}".format(end - start)
     results += s + "\n"
     print (s)
+
+    ###                   Get the rankings for the test set                  ###
+    ###----------------------------------------------------------------------###
+
+    print ("Generating ranking matrix for the test set ...")
+    start = time.time()
+    rankings = wta_hash.best_classifiers(test_data)
+    end = time.time()
+    s = "Elapsed time generating ranking matrix: {0}".format(end - start)
+    results += s + "\n"
+    print (s)
+
+    ###                Calculate dot product on the variables                ###
+    ###----------------------------------------------------------------------###
+
+    print ("Calculating dot product on the rankings ...")
+    start = time.time()
+    # products is the matrix for storing the dot product for the testing
+    # vectors with every 
+    products = np.zeros(rankings.shape, dtype=np.float32)
+    for i in range(len(test_data)):
+        # y is the current testing vector
+        y = test_data[i]
+        for j in range(len(rankings[0])):
+            # vector is the training object ranked in the current position
+            vector_index = rankings[i][j]
+            vector = train_data[vector_index]
+            products[i][j] = np.dot(y, vector)
+    end = time.time()
+    s = "Elapsed time calculating dot products: {0}".format(end - start)
+    results += s + "\n"
+    print (s)
+
+    # Write products in a mat file
+    sio.savemat("products.mat", {"stored": products})
 
     # Write times in a text file
     with open("results.txt", "w") as f:
-        f.write(s)
+        f.write(results)
 
 if __name__ == '__main__':
     main()
