@@ -30,16 +30,16 @@ def main():
     # ###                        Use WTAHash on it                             ###
     # ###----------------------------------------------------------------------###
     
-    # print ("Starting to generate hash table ...")
-    # start = time.time()
-    # wta_hash = wh.WTAHash(train_data, n, k, w)
-    # end = time.time()
-    # table_time = end - start
-    # s = "Elapsed time on generation of hash table: {0}".format(table_time)
-    # results += s + "\n"
-    # print (s)
+    print ("Starting to generate hash table ...")
+    start = time.time()
+    wta_hash = wh.WTAHash(train_data, n, k, w)
+    end = time.time()
+    table_time = end - start
+    s = "Elapsed time on generation of hash table: {0}".format(table_time)
+    results += s + "\n"
+    print (s)
 
-    # # Save the hash in a cPickle file
+    # Save the hash in a cPickle file
     # print ("Starting to write the hash in a file ...")
     # start = time.time()
     # pickle.dump(wta_hash, open("/user/hjhenriq/wtahash/hash.obj", "wb"))
@@ -63,13 +63,13 @@ def main():
     ###                   Load wtahash object with pickle                    ###
     ###----------------------------------------------------------------------###
 
-    print ("Loading wtahash object from file ...")
-    start = time.time()
-    wta_hash = pickle.load(open("/user/hjhenriq/wtahash/hash.obj", "rb"))
-    end = time.time()
-    s = "Elapsed time loading the wtahash file: {0}".format(end - start)
-    results += s + "\n"
-    print (s)
+    # print ("Loading wtahash object from file ...")
+    # start = time.time()
+    # wta_hash = pickle.load(open("/user/hjhenriq/wtahash/hash.obj", "rb"))
+    # end = time.time()
+    # s = "Elapsed time loading the wtahash file: {0}".format(end - start)
+    # results += s + "\n"
+    # print (s)
 
     ###                   Get the rankings for the test set                  ###
     ###----------------------------------------------------------------------###
