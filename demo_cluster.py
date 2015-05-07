@@ -42,8 +42,7 @@ def main():
     # # Save the hash in a cPickle file
     # print ("Starting to write the hash in a file ...")
     # start = time.time()
-    # with open("/user/hjhenriq/wtahash/hash.obj", "wb") as f:
-    #     pickle.dump(wta_hash, f)
+    # pickle.dump(wta_hash, open("/user/hjhenriq/wtahash/hash.obj", "wb"))
     # end = time.time()
     # s = "Elapsed time writing the hash file: {0}".format(end - start)
     # results += s + "\n"
@@ -66,8 +65,7 @@ def main():
 
     print ("Loading wtahash object from file ...")
     start = time.time()
-    with open("/user/hjhenriq/wtahash/hash.obj", "rb") as f:
-        wta_hash = pickle.load(f)
+    wta_hash = pickle.load(open("/user/hjhenriq/wtahash/hash.obj", "rb"))
     end = time.time()
     s = "Elapsed time loading the wtahash file: {0}".format(end - start)
     results += s + "\n"
