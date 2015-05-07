@@ -90,7 +90,7 @@ def main():
     start = time.time()
     # products is the matrix for storing the dot product for the testing
     # vectors with every 
-    products = np.zeros(rankings.shape, dtype=np.float32)
+    products = np.zeros((len(rankings), len(rankings[0])), dtype=np.float32)
     for i in range(len(test_data)):
         # y is the current testing vector
         y = test_data[i]

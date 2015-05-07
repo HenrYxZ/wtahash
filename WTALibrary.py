@@ -210,11 +210,11 @@ def ObtenerValoresTotalesWTA(listWTAClasif, listWTAImagenes, tablahash):
 		if auxWTAimagenes % step == 0:
 			porcentaje = (auxWTAimagenes * 100 / len(listWTAImagenes)) + 1
 			print (
-				"Loading vector {0} of {1}... {2}%".format(
+				"Vector number {0} of {1} ({2}%) ranked".format(
 					auxWTAimagenes, len(listWTAImagenes), porcentaje
 				)
 			)
 		listaValoresWTAClasif.append(auxWTAIndice)
 	avg_time = total_time / float(len(listWTAImagenes))
-	print ("Average time in finding best classifiers is {0}".format(avg_time))
+	print ("Average time in finding a ranking is {0}".format(avg_time))
 	return listaValoresWTAClasif
