@@ -16,7 +16,6 @@ Returns:
     np.array float: objects for the set
 '''
 def load_class(training_percentage, path, set_name):
-    print ("path = {0}".format(path))
     files = glob.glob("{0}/*.mat".format(path))
     objects = None
     training_count = (len(files) * training_percentage) / 100

@@ -100,7 +100,11 @@ def main():
             products[i][j] = np.dot(y, vector)
         percentage = (i * 100) / len(test_data)
         if percentage % 5 == 0:
-            print ("Vector number {0} of {1} ({2}%) multiplied")
+            print (
+                "Vector number {0} of {1} ({2}%) multiplied".format(
+                    i, len(test_data), percentage
+                )
+            )
     end = time.time()
     s = "Elapsed time calculating dot products: {0}".format(end - start)
     results += s + "\n"
