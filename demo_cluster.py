@@ -5,6 +5,12 @@ import cluster
 import cPickle as pickle
 import scipy.io as sio
 
+def normalize(x):
+    norm = np.linalg.norm(x)
+    if norm == 0:
+        return x
+    return x/norm
+
 def main():
     k = 16
     w = 2
@@ -92,11 +98,11 @@ def main():
     products = np.zeros((len(rankings), len(rankings[0])), dtype=np.float32)
     for i in range(len(test_data)):
         # y is the current testing vector
-        y = test_data[i]
+        y = normalize(test_data[i])
         for j in range(len(rankings[0])):
             # vector is the training object ranked in the current position
             vector_index = rankings[i][j]
-            vector = train_data[vector_index]
+            vector = normalize(train_data[vector_index])
             products[i][j] = np.dot(y, vector)
         percentage = (i * 100) / len(test_data)
         if percentage % 5 == 0:
