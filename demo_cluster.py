@@ -14,7 +14,7 @@ def main():
     # Percentage of the data that will be used for training, the rest is testing
     training_percentage = 80
 
-    train_data, wta_hash = train(training_percentage, log)
+    train_data, wta_hash = train(training_percentage, n, k, w, log)
     test_data, rankings = test(training_percentage, wta_hash, log)
     
 
@@ -55,7 +55,7 @@ def main():
     with open("log.txt", "w") as f:
         f.write(log)
 
-def train(training_percentage, log):
+def train(training_percentage, n, k, w, log):
 
     ###                  Load training information matrix                    ###
     ###----------------------------------------------------------------------###
