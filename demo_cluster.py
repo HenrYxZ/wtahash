@@ -89,6 +89,7 @@ def test(training_percentage, wta_hash, log):
     ###                    Load testing information matrix                   ###
     ###----------------------------------------------------------------------###
 
+    path = "/mnt/nas/GrimaRepo/datasets/mscoco/coco2014/crops/cropsFeats"
     print ("Reading testing instances ...")
     start = time.time()
     test_data = cluster.load_classes(training_percentage, path, "testing")
