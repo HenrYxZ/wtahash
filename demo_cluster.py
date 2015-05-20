@@ -4,6 +4,7 @@ import numpy as np
 import cluster
 import scipy.io as sio
 from sklearn.preprocessing import normalize
+from datetime import datetime
 
 def main():
     k = 16
@@ -16,8 +17,9 @@ def main():
 
     train_data, wta_hash = train(training_percentage, n, k, w, log)
     test_data, rankings = test(training_percentage, wta_hash, log)
-    
 
+    starting_time = datetime.now()
+    log += "Starting time {0}\n".format(starting_time)
     ###                Calculate dot product on the variables                ###
     ###----------------------------------------------------------------------###
 
@@ -51,6 +53,8 @@ def main():
     # Write products in a mat file
     sio.savemat("products.mat", {"stored": products})
 
+    end_time = datetime.now()
+    log += "Ending time {0}\n".format(end_time)
     # Write times in a text file
     with open("log.txt", "w") as f:
         f.write(log)
