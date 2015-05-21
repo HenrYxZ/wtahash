@@ -28,6 +28,7 @@ def main():
     # products is the matrix for storing the dot product for the testing
     # vectors with every 
     products = np.zeros((len(rankings), ranking_size), dtype=np.float32)
+    step = (len(test_data) * 5) / 100
     for i in range(len(test_data)):
         # y is the current testing vector
         y = test_data[i]
@@ -38,8 +39,8 @@ def main():
             vector = train_data[vector_index]
             vector_norm = normalize(vector[:, np.newaxis], axis=0).ravel()
             products[i][j] = np.dot(y_norm, vector_norm)
-        percentage = (i * 100) / len(test_data)
-        if percentage % 5 == 0:
+        if i % step == 0:
+            percentage = (i * 100) / len(test_data)
             print (
                 "Vector number {0} of {1} ({2}%) multiplied".format(
                     i, len(test_data), percentage
