@@ -30,6 +30,6 @@ Carpeta en cluster de MS - COCO
 
 270.000 archivos .mat de dimension (D) = 4.096, 72 clases
 1.105.920.000 floats de ¿32 bit? = 4 bytes en la matriz de datos de 270000x4096.
-1.080.000 kbytes
-1.055 Mbytes
-1.03 Gbytes de datos.
+4.320.000 kbytes
+4.218.75 Mbytes
+4.12 Gbytes de datos.
