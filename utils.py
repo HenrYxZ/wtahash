@@ -3,3 +3,62 @@ def humanize_time(secs):
     mins, secs = divmod(secs, 60)
     hours, mins = divmod(mins, 60)
     return '%02d:%02d:%02d' % (hours, mins, secs)
+
+def precision_recall(ranking):
+    precision = [1.0]
+    recall = [0.0]
+    retrieved_inter_relevant = 0.0
+    relevants_count = 0
+    retrieved = 0
+    for elem in ranking:
+        if elem == "R":
+            relevants_count += 1
+    for i in range(len(ranking)):
+        retrieved += 1
+        # if this element is relevant
+        if ranking[i] == "R":
+            retrieved_inter_relevant += 1
+            recall.append(retrieved_inter_relevant / relevants_count)
+            precision.append(retrieved_inter_relevant / retrieved)
+    return precision, recall
+
+def relevants_retrieveds(ranking):
+    relevant = 0
+    retrieved = 0
+    for i in range(len(ranking)):
+        retrieved += 1
+        if ranking[i] == "R":
+            relevant += 1
+    return relevant, retrieved
+
+def precision_fixed_recall(ranking):
+    precisions = [1.0]
+    recall = [0.0]
+    relevants_count = 0
+    retrieved_inter_relevant = 0.0
+    retrieved = 0
+    step = len(ranking) / 10
+    for i in range(len(ranking)):
+        if elem == "R":
+            relevants_count += 1
+            if relevants_count % step == 0:
+                separators.append(i)
+    print("Separators = {0}".format(separators))
+    # Iterate each 10% of the ranking
+    for i in range(9):
+        a = separators[i]
+        b = separators[i + 1] - 1
+        this_ranking = ranking[a:b]
+        this_relevants, this_retrieveds = relevants_retrieveds(this_ranking)
+        retrieved_inter_relevant += this_relevants
+        retrieved += this_retrieveds
+        precisions.append(retrieved_inter_relevant / retrieved)
+    this_ranking = ranking[separators[-1]:]
+    retrieved_inter_relevant += this_relevants
+    retrieved += this_retrieveds
+    precisions.append(retrieved_inter_relevant / retrieved)
+    return precisions
+
+def interpolate_p(precision):
+    # This is not an efficient algorithm but it shouldn't be slow
+    return [max(precision[i:]) for i in range(len(precision))]

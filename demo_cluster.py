@@ -21,8 +21,8 @@ def main():
     starting_time = datetime.now()
     log += "Starting time {0}\n".format(starting_time)
     
-    train_data, wta_hash = train(training_percentage, n, k, w, log)
-    test_data, rankings = test(training_percentage, wta_hash, log)
+    train_data, train_labels, wta_hash = train(training_percentage, n, k, w, log)
+    test_data, test_labels, rankings = test(training_percentage, wta_hash, log)
     
     # dot_products(train_data, rankings, ranking_size, log)
 
@@ -40,7 +40,7 @@ def train(training_percentage, n, k, w, log):
     path = "/mnt/nas/GrimaRepo/datasets/mscoco/coco2014/crops/cropsFeats"
     print ("Reading training instances ...")
     start = time.time()
-    train_data = cluster.load_classes(training_percentage, path, "training")
+    train_data, train_labels = cluster.load_classes(training_percentage, path, "training")
     end = time.time()
     log += "Training matrix of shape {0}".format(train_data.shape) + "\n"
     elapsed_time = utils.humanize_time(end - start)
@@ -60,7 +60,7 @@ def train(training_percentage, n, k, w, log):
     log += s + "\n"
     print (s)
 
-    return train_data, wta_hash
+    return train_data, train_labels, wta_hash
 
 def test(training_percentage, wta_hash, log):
 
@@ -70,7 +70,7 @@ def test(training_percentage, wta_hash, log):
     path = "/mnt/nas/GrimaRepo/datasets/mscoco/coco2014/crops/cropsFeats"
     print ("Reading testing instances ...")
     start = time.time()
-    test_data = cluster.load_classes(training_percentage, path, "testing")
+    test_data, test_labels = cluster.load_classes(training_percentage, path, "testing")
     end = time.time()
     log += "Testing matrix of shape {0}".format(test_data.shape) + "\n"
     elapsed_time = utils.humanize_time(end - start)
@@ -90,7 +90,7 @@ def test(training_percentage, wta_hash, log):
     log += s + "\n"
     print (s)
 
-    return test_data, rankings
+    return test_data, test_labels, rankings
 
 def dot_products(train_data, rankings, ranking_size, log):
     ###                Calculate dot product on the variables                ###
