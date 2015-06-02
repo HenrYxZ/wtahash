@@ -43,6 +43,7 @@ def precision_fixed_recall(ranking):
     retrieved_inter_relevant = 0.0
     retrieved = 0
     step = len(ranking) / 10
+    separators = []
     for i in range(len(ranking)):
         if ranking[i] == "R":
             relevants_count += 1
