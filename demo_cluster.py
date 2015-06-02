@@ -27,12 +27,13 @@ def main():
     train_data, train_labels = read_descriptors(
         training_percentage, "training", log
     )
-    wta_hash = create_hash(train_data, n, k, w, log)
+    # wta_hash = create_hash(train_data, n, k, w, log)
     
     ## Store the hash in a binary file
     hash_filename = "wtahash.obj"
-    pickle.dump(wta_hash, open(hash_filename, "wb"), protocol=2)
-    
+    # pickle.dump(wta_hash, open(hash_filename, "wb"), protocol=2)
+    wta_hash = pickle.load(open(hash_filename, "rb"))
+
     # Testing
     #---------------------------------------------------------------------------
     test_data, test_labels = read_descriptors(
