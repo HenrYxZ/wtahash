@@ -1,3 +1,5 @@
+import numpy as np
+
 def humanize_time(secs):
     # Extracted from http://testingreflections.com/node/6534
     mins, secs = divmod(secs, 60)
@@ -5,8 +7,8 @@ def humanize_time(secs):
     return '%02d:%02d:%02d' % (hours, mins, secs)
 
 def precision_recall(ranking):
-    precision = [1.0]
-    recall = [0.0]
+    precisions = []
+    recalls = []
     retrieved_inter_relevant = 0.0
     relevants_count = 0
     retrieved = 0
@@ -18,9 +20,13 @@ def precision_recall(ranking):
         # if this element is relevant
         if ranking[i] == "R":
             retrieved_inter_relevant += 1
-            recall.append(retrieved_inter_relevant / relevants_count)
-            precision.append(retrieved_inter_relevant / retrieved)
-    return precision, recall
+            recalls.append(retrieved_inter_relevant / relevants_count)
+            precisions.append(retrieved_inter_relevant / retrieved)
+    return precisions, recalls
+
+def average_precision(ranking):
+    precisions, recalls = precision_recall(ranking)
+    return np.average(precisions)
 
 def relevants_retrieveds(ranking):
     relevant = 0
@@ -33,7 +39,6 @@ def relevants_retrieveds(ranking):
 
 def precision_fixed_recall(ranking):
     precisions = [1.0]
-    recall = [0.0]
     relevants_count = 0
     retrieved_inter_relevant = 0.0
     retrieved = 0
@@ -59,6 +64,14 @@ def precision_fixed_recall(ranking):
     precisions.append(retrieved_inter_relevant / retrieved)
     return precisions
 
-def interpolate_p(precision):
+def interpolate_p(precisions):
     # This is not an efficient algorithm but it shouldn't be slow
-    return [max(precision[i:]) for i in range(len(precision))]
+    return [max(precisions[i:]) for i in range(len(precisions))]
+
+def relevance_ranking(ranking, labels, class_name):
+    return ["R" if labels[index] == class_name else "F" for index in ranking]
+
+def write_list(l, path):
+    with open(path, "w") as f:
+        for elem in l:
+            f.write("{0}\n".format(elem))

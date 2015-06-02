@@ -3,22 +3,22 @@ import glob
 import numpy as np
 
 
-'''Loads the objects for a class in the MSCoco dataset.
-
-Args:
-    training_percentage (int): Number from 0 to 100. The percentage of the files
-        that will be used in the training set, the rest will be in the testing.
-    path (string): Path to the object files 
-        (e.g. "/coco2014/crops/cropsFeats/airplane")
-    set_name (string): It can be training or testing
-
-Returns:
-    {
-        np.array float: objects for the set,
-        string: name of the class
-    }
-'''
 def load_class(training_percentage, path, set_name):
+    '''Loads the objects for a class in the MSCoco dataset.
+
+    Args:
+        training_percentage (int): Number from 0 to 100. The percentage of the files
+            that will be used in the training set, the rest will be in the testing.
+        path (string): Path to the object files 
+            (e.g. "/coco2014/crops/cropsFeats/airplane")
+        set_name (string): It can be training or testing
+
+    Returns:
+        {
+            np.array float: objects for the set,
+            string: name of the class
+        }
+    '''
     files = glob.glob("{0}/*.mat".format(path))
     class_name = path.split("/")[-1]
     objects = None
@@ -41,19 +41,19 @@ def load_class(training_percentage, path, set_name):
     print ("Objects matrix of shape = {0}".format(objects.shape))
     return objects, labels
 
-'''Loads the objects for all the classes in the MSCoco dataset.
-
-Args:
-    training_percentage (int): Number from 0 to 100. The percentage of the files
-        that will be used in the training set, the rest will be in the testing.
-    path (string): Path to the folder containing all the classes
-        (eg. /coco2014/crops/cropsFeats)
-    set_name (string): It can be training or testing
-
-Returns:
-    np.array float: objects for the set
-'''
 def load_classes(training_percentage, path, set_name):
+    '''Loads the objects for all the classes in the MSCoco dataset.
+
+    Args:
+        training_percentage (int): Number from 0 to 100. The percentage of the files
+            that will be used in the training set, the rest will be in the testing.
+        path (string): Path to the folder containing all the classes
+            (eg. /coco2014/crops/cropsFeats)
+        set_name (string): It can be training or testing
+
+    Returns:
+        np.array float: objects for the set
+    '''
     folders = glob.glob("{0}/*".format(path))
     folders.sort()
     objects = None
