@@ -39,7 +39,7 @@ def main():
     test_data, test_labels = read_descriptors(
         training_percentage, "testing", log
     )
-    rankings = get_rankings(wta_hash, log)
+    rankings = get_rankings(test_data, wta_hash, log)
 
     ## Store the rankings in a csv file
     rankings_filename = "rankings.csv"
