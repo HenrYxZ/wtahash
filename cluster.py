@@ -67,7 +67,7 @@ def load_classes(training_percentage, path, set_name):
             training_percentage, full_path, set_name
         )
         labels += this_labels
-        if objects == None:
+        if objects is None:
             objects = this_class
         else:
             objects = np.vstack((objects, this_class))
