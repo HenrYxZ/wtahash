@@ -44,7 +44,7 @@ def precision_fixed_recall(ranking):
     retrieved = 0
     step = len(ranking) / 10
     for i in range(len(ranking)):
-        if elem == "R":
+        if ranking[i] == "R":
             relevants_count += 1
             if relevants_count % step == 0:
                 separators.append(i)

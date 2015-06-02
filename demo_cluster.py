@@ -42,13 +42,29 @@ def main():
     rankings = get_rankings(test_data, wta_hash, log)
 
     ## Store the rankings in a csv file
-    rankings_filename = "rankings.csv"
-    np.savetxt(rankings_filename, rankings, delimiter=",")
+    print("Storing rankings in a mat file ...")
+    start = time.time()
+    rankings_filename = "rankings.mat"
+    data = {"stored": rankings}
+    sio.savemat(rankings_filename, data, do_compression=True)
+    end = time.time()
+    elapsed_time = utils.humanize_time(end - start)
+    s = "Elapsed time storing the rankings {0}".format(elapsed_time)
+    log += s + "\n"
+    print(s)
+    
     ## Store the labels in a text file
+    print("Storing the labels in text files...")
+    start = time.time()
     train_labels_fn = "train_labels.txt"
     test_labels_fn = "test_labels.txt"
     utils.write_list(train_labels, train_labels_fn)
     utils.write_list(test_labels, test_labels_fn)
+    end = time.time()
+    elapsed_time = utils.humanize_time(end - start)
+    s = "Elapsed time storing the labels {0}".format(elapsed_time)
+    log += s + "\n"
+    print(s)
 
     # Dot products
     #---------------------------------------------------------------------------
