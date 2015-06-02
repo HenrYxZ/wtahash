@@ -3,6 +3,9 @@
 - Tiempo en encontrar el mas cercano = 932.512481928
 - Probar con 10, 15 y 20 clases
 
+Average time in finding a ranking is 0.0765272365539
+Elapsed time generating ranking matrix: 00:11:33
+
 carpeta en cluster de MS - COCO
 /mnt/nas/GrimaRepo/datasets/mscoco/coco2014/crops/cropsFeats
 

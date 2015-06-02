@@ -75,3 +75,11 @@ def write_list(l, path):
     with open(path, "w") as f:
         for elem in l:
             f.write("{0}\n".format(elem))
+
+def read_list(path):
+    l = []
+    with open(path, "r") as f:
+        for line in f:
+            l.append(line)
+    print("first line = {0}".format(l[0]))
+    return l

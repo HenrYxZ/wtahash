@@ -43,7 +43,7 @@ def main():
 
     ## Store the rankings in a csv file
     rankings_filename = "rankings.csv"
-    np.savetxt(rankings, rankings_filename, delimiter=",")
+    np.savetxt(rankings_filename, rankings, delimiter=",")
     ## Store the labels in a text file
     train_labels_fn = "train_labels.txt"
     test_labels_fn = "test_labels.txt"
