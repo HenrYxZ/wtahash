@@ -27,7 +27,7 @@ def main():
     train_data, train_labels = read_descriptors(
         training_percentage, "training", log
     )
-    wta_hash = create_hash(training_percentage, n, k, w, log)
+    wta_hash = create_hash(train_data, n, k, w, log)
     
     ## Store the hash in a binary file
     hash_filename = "wtahash.obj"
