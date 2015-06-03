@@ -180,15 +180,15 @@ def calculate_metrics(rankings, train_labels, test_labels, log):
             )
         )
     # Take 5 random queries
-    n_queries = 5
-    sample_indices = np.random.choice(len(rankings), n_queries, replace=False)
-    sample = [rel_ranks[index] for index in sample_indices]
-    # Get precision-recall for each query
-    queries = []
-    for ranking in sample:
-        precisions = utils.precision_fixed_recall(ranking)
-        queries.append(utils.interpolate_p(precisions))
-    utils.write_list(queries, "queries.txt")
+    # n_queries = 5
+    # sample_indices = np.random.choice(len(rankings), n_queries, replace=False)
+    # sample = [rel_ranks[index] for index in sample_indices]
+    # # Get precision-recall for each query
+    # queries = []
+    # for ranking in sample:
+    #     precisions = utils.precision_fixed_recall(ranking)
+    #     queries.append(utils.interpolate_p(precisions))
+    # utils.write_list(queries, "queries.txt")
     # Get average precisions
     avg_precs = [utils.average_precision(rel_rank) for rel_rank in rel_ranks]
     utils.write_list(avg_precs, "avg_precs.txt")

@@ -46,9 +46,9 @@ def precision_fixed_recall(ranking):
     separators = []
     for i in range(len(ranking)):
         if ranking[i] == "R":
-            relevants_count += 1
             if relevants_count % step == 0:
                 separators.append(i)
+            relevants_count += 1
     print("Separators = {0}".format(separators))
     # Iterate each 10% of the ranking
     for i in range(9):
