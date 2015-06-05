@@ -41,27 +41,33 @@ def load_class(training_percentage, path, set_name):
     print ("Objects matrix of shape = {0}".format(objects.shape))
     return objects, labels
 
-def load_classes(training_percentage, path, set_name):
+def load_classes(training_percentage, path, set_name, n_classes):
     '''Loads the objects for all the classes in the MSCoco dataset.
 
     Args:
-        training_percentage (int): Number from 0 to 100. The percentage of the files
-            that will be used in the training set, the rest will be in the testing.
+        training_percentage (int): Number from 0 to 100. The percentage of the
+            files that will be used in the training set, the rest will be in
+            the testing.
         path (string): Path to the folder containing all the classes
             (eg. /coco2014/crops/cropsFeats)
         set_name (string): It can be training or testing
+        n_classes (int): Number of the dataset classes that are going to be
+            used. Use 0 to load all the 72 classes. 
 
     Returns:
         np.array float: objects for the set
     '''
+
     folders = glob.glob("{0}/*".format(path))
     folders.sort()
+    if n_classes > len(folders) or n_classes <= 0:
+        n_classes = len(folders)
     objects = None
     labels = []
     # For each folder get the objects of that class
     # DEBUGGING ONLY USE 10 CLASSES
     # for i in range(len(folders)):
-    for i in range(10):
+    for i in range(n_classes):
         full_path = folders[i]
         this_class, this_labels = load_class(
             training_percentage, full_path, set_name

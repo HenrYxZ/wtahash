@@ -4,13 +4,28 @@ import scipy.io as sio
 from sklearn.preprocessing import normalize
 from datetime import datetime
 import cPickle as pickle
+import sys
 
 # local modules
 import wtahash as wh
 import cluster
 import utils
 
+################################################################################
+####                                Main                                    ####
+################################################################################
 def main():
+    # Get the options
+    s = "Enter the number of classes from the dataset to be used (0 for all)."
+    n_classes = input(s)
+    s = "Choose an option:\n"\
+        "- [0] Load stored values of hash and rankings.\n"\
+        "- [1] Calculate hash and rankings."
+    opt_load = input(s)
+    s = "Choose an option:\n"\
+        "- [0] Don't calculate dot products.\n"\
+        "- [1] Calculate dot products."
+    opt_prod = input(s)
     k = 16
     w = 2
     n = 1200
@@ -21,56 +36,36 @@ def main():
     
     starting_time = datetime.now()
     log += "Starting time {0}\n".format(starting_time)
+    log += "Using the first {0} classes of the dataset".format(n_classes)
     
     # Training
     #---------------------------------------------------------------------------
     train_data, train_labels = read_descriptors(
-        training_percentage, "training", log
+        training_percentage, "training", n_classes, log
     )
-    # wta_hash = create_hash(train_data, n, k, w, log)
-    
-    ## Store the hash in a binary file
-    hash_filename = "wtahash.obj"
-    # pickle.dump(wta_hash, open(hash_filename, "wb"), protocol=2)
-    wta_hash = pickle.load(open(hash_filename, "rb"))
+    if opt_load == 0:
+        wta_hash = pickle.load(open(hash_filename, "rb"))
+    else:
+        wta_hash = create_hash(train_data, n, k, w, log)
+        # store_hash(wta_hash, log)
 
     # Testing
     #---------------------------------------------------------------------------
     test_data, test_labels = read_descriptors(
         training_percentage, "testing", log
     )
-    # rankings = get_rankings(test_data, wta_hash, log)
-
-    ## Store the rankings in a csv file
-    # print("Storing rankings in a mat file ...")
-    # start = time.time()
-    rankings_filename = "rankings.mat"
-    data = sio.loadmat(rankings_filename)
-    rankings = data["stored"]
-    # data = {"stored": rankings}
-    # sio.savemat(rankings_filename, data, do_compression=True)
-    # end = time.time()
-    # elapsed_time = utils.humanize_time(end - start)
-    # s = "Elapsed time storing the rankings {0}".format(elapsed_time)
-    # log += s + "\n"
-    # print(s)
-    
-    ## Store the labels in a text file
-    # print("Storing the labels in text files...")
-    # start = time.time()
-    # train_labels_fn = "train_labels.txt"
-    # test_labels_fn = "test_labels.txt"
-    # utils.write_list(train_labels, train_labels_fn)
-    # utils.write_list(test_labels, test_labels_fn)
-    # end = time.time()
-    # elapsed_time = utils.humanize_time(end - start)
-    # s = "Elapsed time storing the labels {0}".format(elapsed_time)
-    # log += s + "\n"
-    # print(s)
+    if opt_load == 0:
+        data = sio.loadmat(rankings_filename)
+        rankings = data["stored"]
+    else:
+        rankings = get_rankings(test_data, wta_hash, log)
+        store_rankings(rankings, n_classes, log)
+        store_labels(train_labels, test_labels, n_classes, log)
 
     # Dot products
     #---------------------------------------------------------------------------
-    # dot_products(train_data, rankings, ranking_size, log)
+    if opt_prod == 1:
+        dot_products(train_data, rankings, ranking_size, log)
 
     # Precision metrics
     #---------------------------------------------------------------------------
@@ -79,17 +74,22 @@ def main():
     end_time = datetime.now()
     log += "Ending time {0}\n".format(end_time)
     # Write times in a text file
-    with open("log.txt", "w") as f:
+    log_filename = "log_{0}.txt".format(n_classes)
+    with open(.format, "w") as f:
         f.write(log)
 
-def read_descriptors(training_percentage, set_name, log):
+################################################################################
+
+def read_descriptors(training_percentage, set_name, n_classes, log):
     ###                  Load training information matrix                    ###
     ###----------------------------------------------------------------------###
     
     path = "/mnt/nas/GrimaRepo/datasets/mscoco/coco2014/crops/cropsFeats"
     print ("Reading {0} instances ...".format(set_name))
     start = time.time()
-    data, labels = cluster.load_classes(training_percentage, path, set_name)
+    data, labels = cluster.load_classes(
+        training_percentage, path, set_name, n_classes
+    )
     end = time.time()
     log += "{0} matrix of shape {1}".format(set_name, data.shape) + "\n"
     elapsed_time = utils.humanize_time(end - start)
@@ -100,8 +100,8 @@ def read_descriptors(training_percentage, set_name, log):
     return data, labels
 
 def create_hash(train_data, n, k, w, log):        
-    # ###                        Use WTAHash on it                             ###
-    # ###----------------------------------------------------------------------###
+    ###                        Use WTAHash on it                             ###
+    ###----------------------------------------------------------------------###
     
     print ("Starting to generate hash table ...")
     start = time.time()
@@ -113,6 +113,18 @@ def create_hash(train_data, n, k, w, log):
     print (s)
 
     return wta_hash
+
+def store_hash(wta_hash, n_classes, log):
+    ## Store the hash in a binary file
+    print("Storing the hash in a file ...")
+    start = time.time()
+    hash_filename = "wtahash_{0}.obj".format(n_classes)
+    pickle.dump(wta_hash, open(hash_filename, "wb"), protocol=2)
+    end = time.time()
+    elapsed_time = utils.humanize_time(end - start)
+    s = "Elapsed time storing the hash {0}".format(elapsed_time)
+    log += s + "\n"
+    print(s)
 
 def get_rankings(test_data, wta_hash, log):
     ###                   Get the rankings for the test set                  ###
@@ -129,6 +141,33 @@ def get_rankings(test_data, wta_hash, log):
     print (s)
 
     return rankings
+
+def store_rankings(rankings, n_classes, log):
+    ## Store the rankings in a csv file
+    print("Storing rankings in a mat file ...")
+    start = time.time()
+    rankings_filename = "rankings_{0}.mat".format(n_classes)
+    data = {"stored": rankings}
+    sio.savemat(rankings_filename, data, do_compression=True)
+    end = time.time()
+    elapsed_time = utils.humanize_time(end - start)
+    s = "Elapsed time storing the rankings {0}".format(elapsed_time)
+    log += s + "\n"
+    print(s)
+
+def store_labels(train_labels, test_labels, n_classes, log):
+    ## Store the labels in a text file
+    print("Storing the labels in text files...")
+    start = time.time()
+    train_labels_fn = "train_labels_{0}.txt".format(n_classes)
+    test_labels_fn = "test_labels{0}.txt".format(n_classes)
+    utils.write_list(train_labels, train_labels_fn)
+    utils.write_list(test_labels, test_labels_fn)
+    end = time.time()
+    elapsed_time = utils.humanize_time(end - start)
+    s = "Elapsed time storing the labels {0}".format(elapsed_time)
+    log += s + "\n"
+    print(s)
 
 def dot_products(train_data, rankings, ranking_size, log):
     ###                Calculate dot product on the variables                ###
@@ -164,7 +203,7 @@ def dot_products(train_data, rankings, ranking_size, log):
     print (s)
 
     # Write products in a mat file
-    sio.savemat("products.mat", {"stored": products})
+    sio.savemat("products.mat", {"stored": products}, do_compression=True)
 
 def calculate_metrics(rankings, train_labels, test_labels, log):
     ###           Calculates mAP and 5 random precision queries              ###
@@ -193,7 +232,9 @@ def calculate_metrics(rankings, train_labels, test_labels, log):
     avg_precs = [utils.average_precision(rel_rank) for rel_rank in rel_ranks]
     utils.write_list(avg_precs, "avg_precs.txt")
     mean_avg_prec = np.mean(avg_precs)
-    print("mean average precision = {0}".format(mean_avg_prec))
+    s = "mean average precision = {0}".format(mean_avg_prec)
+    log += s + "\n"
+    print(s)
     end = time.time()
     elapsed_time = utils.humanize_time(end - start)
     s = "Elapsed time calculating metrics: {0}".format(elapsed_time)
