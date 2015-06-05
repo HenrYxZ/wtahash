@@ -75,7 +75,7 @@ def main():
     log += "Ending time {0}\n".format(end_time)
     # Write times in a text file
     log_filename = "log_{0}.txt".format(n_classes)
-    with open(.format, "w") as f:
+    with open(log_filename, "w") as f:
         f.write(log)
 
 ################################################################################
