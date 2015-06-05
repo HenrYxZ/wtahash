@@ -93,8 +93,7 @@ class Evaluation:
             training_percentage, sefl.dataset, set_name, self.n_classes
         )
         end = time.time()
-        self.log += "{0} matrix of shape {1}".format(set_name, data.shape) +
-             "\n"
+        self.log += "{0} matrix of shape {1}\n".format(set_name, data.shape)
         elapsed_time = utils.humanize_time(end - start)
         s = "Elapsed time reading the {0} files: {1}".format(
             set_name, elapsed_time
