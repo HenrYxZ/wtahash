@@ -49,33 +49,33 @@ class Evaluation:
         
         # Training
         #-----------------------------------------------------------------------
-        train_data, train_labels = read_descriptors(train_perc, "training")
+        train_data, train_labels = self.read_descriptors(train_perc, "training")
         if opt_load == 1:
             wta_hash = pickle.load(open(hash_filename, "rb"))
         else:
-            wta_hash = create_hash(train_data, n, k, w)
+            wta_hash = self.create_hash(train_data, n, k, w)
             # store_hash(wta_hash)
 
         # Testing
         #-----------------------------------------------------------------------
-        test_data, test_labels = read_descriptors(train_perc, "testing")
+        test_data, test_labels = self.read_descriptors(train_perc, "testing")
         if opt_load == 1:
             data = sio.loadmat(rankings_filename)
             rankings = data["stored"]
         else:
-            rankings = get_rankings(test_data, wta_hash)
-            store_rankings(rankings)
-            store_labels(train_labels, test_labels)
+            rankings = self.get_rankings(test_data, wta_hash)
+            self.store_rankings(rankings)
+            self.store_labels(train_labels, test_labels)
 
         # Dot products
         #-----------------------------------------------------------------------
         if opt_prod == 0:
-            dot_products(train_data, rankings, ranking_size)
+            self.dot_products(train_data, rankings, ranking_size)
 
         # Precision metrics
         #-----------------------------------------------------------------------
         # Generate relevance rankings
-        calculate_metrics(rankings, train_labels, test_labels)
+        self.calculate_metrics(rankings, train_labels, test_labels)
         end_time = datetime.now()
         self.log += "Ending time {0}\n".format(end_time)
         # Write times in a text file
@@ -90,7 +90,7 @@ class Evaluation:
         print ("Reading {0} instances ...".format(set_name))
         start = time.time()
         data, labels = cluster.load_classes(
-            training_percentage, sefl.dataset, set_name, self.n_classes
+            training_percentage, self.dataset, set_name, self.n_classes
         )
         end = time.time()
         self.log += "{0} matrix of shape {1}\n".format(set_name, data.shape)
