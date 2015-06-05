@@ -16,15 +16,15 @@ import utils
 ################################################################################
 def main():
     # Get the options
-    s = "Enter the number of classes from the dataset to be used (0 for all)."
+    s = "Enter the number of classes from the dataset to be used (0 for all).\n"
     n_classes = input(s)
     s = "Choose an option:\n"\
         "- [0] Load stored values of hash and rankings.\n"\
-        "- [1] Calculate hash and rankings."
+        "- [1] Calculate hash and rankings.\n"
     opt_load = input(s)
     s = "Choose an option:\n"\
         "- [0] Don't calculate dot products.\n"\
-        "- [1] Calculate dot products."
+        "- [1] Calculate dot products.\n"
     opt_prod = input(s)
     k = 16
     w = 2
@@ -52,7 +52,7 @@ def main():
     # Testing
     #---------------------------------------------------------------------------
     test_data, test_labels = read_descriptors(
-        training_percentage, "testing", log
+        training_percentage, "testing", n_classes, log
     )
     if opt_load == 0:
         data = sio.loadmat(rankings_filename)

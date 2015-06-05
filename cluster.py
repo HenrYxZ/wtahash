@@ -28,7 +28,14 @@ def load_class(training_percentage, path, set_name):
         my_range = range(training_count)
     else:
         my_range = range(training_count, len(files))
+    step = (my_range * 5) / 100
     for i in my_range:
+        if i % step == 0:
+            percentage = (i * 100) / my_range
+            print("Reading file {0} from {1}({2}%) ...".format(
+                    i, my_range, percentage
+                )
+            )
         f = files[i]
         data = sio.loadmat(f)
         features = np.array(data["stored"], dtype=np.float32)
@@ -67,7 +74,13 @@ def load_classes(training_percentage, path, set_name, n_classes):
     # For each folder get the objects of that class
     # DEBUGGING ONLY USE 10 CLASSES
     # for i in range(len(folders)):
+    step = (n_classes * 5) / 100
     for i in range(n_classes):
+        percentage = (i * 100) / n_classes
+        print("Reading class number {0} from {1} ({2}%) ...".format(
+                i, n_classes, percentage
+            )
+        )
         full_path = folders[i]
         this_class, this_labels = load_class(
             training_percentage, full_path, set_name
