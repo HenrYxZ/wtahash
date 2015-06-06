@@ -154,8 +154,7 @@ class Evaluation:
         data = {"stored": rankings}
         sio.savemat(rankings_filename, data, do_compression=True)
         end = time.time()
-        elapsed_time = utils.humanize_time(end - start)
-        s = "Elapsed time storing the rankings {0}".format(elapsed_time)
+        s = "Elapsed time storing the rankings {0} secs.".format(end - start)
         self.log += s + "\n"
         print(s)
 
@@ -164,12 +163,11 @@ class Evaluation:
         print("Storing the labels in text files...")
         start = time.time()
         train_labels_fn = "train_labels_{0}.txt".format(self.n_classes)
-        test_labels_fn = "test_labels{0}.txt".format(self.n_classes)
+        test_labels_fn = "test_labels_{0}.txt".format(self.n_classes)
         utils.write_list(train_labels, train_labels_fn)
         utils.write_list(test_labels, test_labels_fn)
         end = time.time()
-        elapsed_time = utils.humanize_time(end - start)
-        s = "Elapsed time storing the labels {0}".format(elapsed_time)
+        s = "Elapsed time storing the labels {0} secs.".format(end - start)
         self.log += s + "\n"
         print(s)
 
@@ -207,7 +205,12 @@ class Evaluation:
         print (s)
 
         # Write products in a mat file
-        sio.savemat("products.mat", {"stored": products}, do_compression=True)
+        print("Storing products in a mat file ...")
+        start = time.time()
+        prods_filename = "products_{0}.mat".format(self.n_classes)
+        sio.savemat(prods_filename, {"stored": products}, do_compression=True)
+        end = time.time()
+        print("Elapsed time storing the products {0} secs.".format(end - start))
 
     def calculate_metrics(self, rankings, train_labels, test_labels):
         ###           Calculates mAP and 5 random precision queries          ###
