@@ -70,7 +70,7 @@ class Evaluation:
         # Dot products
         #-----------------------------------------------------------------------
         if opt_prod == 0:
-            self.dot_products(train_data, rankings, ranking_size)
+            self.dot_products(train_data, test_data, rankings, ranking_size)
 
         # Precision metrics
         #-----------------------------------------------------------------------
@@ -173,7 +173,7 @@ class Evaluation:
         self.log += s + "\n"
         print(s)
 
-    def dot_products(self, train_data, rankings, ranking_size):
+    def dot_products(self, train_data, test_data, rankings, ranking_size):
         ###                Calculate dot product on the variables            ###
         ###------------------------------------------------------------------###
 
