@@ -51,6 +51,7 @@ class Evaluation:
         #-----------------------------------------------------------------------
         train_data, train_labels = self.read_descriptors(train_perc, "training")
         if opt_load == 1:
+            hash_filename = "results/wtahash_{0}.obj".format(self.n_classes)
             wta_hash = pickle.load(open(hash_filename, "rb"))
         else:
             wta_hash = self.create_hash(train_data, n, k, w)
@@ -60,6 +61,9 @@ class Evaluation:
         #-----------------------------------------------------------------------
         test_data, test_labels = self.read_descriptors(train_perc, "testing")
         if opt_load == 1:
+            rankings_filename = "results/rankings_{0}.mat".format(
+                self.n_classes
+            )
             data = sio.loadmat(rankings_filename)
             rankings = data["stored"]
         else:
@@ -70,7 +74,10 @@ class Evaluation:
         # Dot products
         #-----------------------------------------------------------------------
         if opt_prod == 0:
-            self.dot_products(train_data, test_data, rankings, ranking_size)
+            prods = self.dot_products(
+                train_data, test_data, rankings, ranking_size
+            )
+            self.store_products(prods)
 
         # Precision metrics
         #-----------------------------------------------------------------------
@@ -79,7 +86,7 @@ class Evaluation:
         end_time = datetime.now()
         self.log += "Ending time {0}\n".format(end_time)
         # Write times in a text file
-        log_filename = "log_{0}.txt".format(self.n_classes)
+        log_filename = "results/log_{0}.txt".format(self.n_classes)
         with open(log_filename, "w") as f:
             f.write(self.log)
 
@@ -118,18 +125,6 @@ class Evaluation:
 
         return wta_hash
 
-    def store_hash(self, wta_hash):
-        ## Store the hash in a binary file
-        print("Storing the hash in a file ...")
-        start = time.time()
-        hash_filename = "wtahash_{0}.obj".format(self.n_classes)
-        pickle.dump(wta_hash, open(hash_filename, "wb"), protocol=2)
-        end = time.time()
-        elapsed_time = utils.humanize_time(end - start)
-        s = "Elapsed time storing the hash {0}".format(elapsed_time)
-        self.log += s + "\n"
-        print(s)
-
     def get_rankings(self, test_data, wta_hash):
         ###                   Get the rankings for the test set              ###
         ###------------------------------------------------------------------###
@@ -145,31 +140,6 @@ class Evaluation:
         print (s)
 
         return rankings
-
-    def store_rankings(self, rankings):
-        ## Store the rankings in a csv file
-        print("Storing rankings in a mat file ...")
-        start = time.time()
-        rankings_filename = "rankings_{0}.mat".format(self.n_classes)
-        data = {"stored": rankings}
-        sio.savemat(rankings_filename, data, do_compression=True)
-        end = time.time()
-        s = "Elapsed time storing the rankings {0} secs.".format(end - start)
-        self.log += s + "\n"
-        print(s)
-
-    def store_labels(self, train_labels, test_labels):
-        ## Store the labels in a text file
-        print("Storing the labels in text files...")
-        start = time.time()
-        train_labels_fn = "train_labels_{0}.txt".format(self.n_classes)
-        test_labels_fn = "test_labels_{0}.txt".format(self.n_classes)
-        utils.write_list(train_labels, train_labels_fn)
-        utils.write_list(test_labels, test_labels_fn)
-        end = time.time()
-        s = "Elapsed time storing the labels {0} secs.".format(end - start)
-        self.log += s + "\n"
-        print(s)
 
     def dot_products(self, train_data, test_data, rankings, ranking_size):
         ###                Calculate dot product on the variables            ###
@@ -203,14 +173,7 @@ class Evaluation:
         s = "Elapsed time calculating dot products: {0}".format(elapsed_time)
         self.log += s + "\n"
         print (s)
-
-        # Write products in a mat file
-        print("Storing products in a mat file ...")
-        start = time.time()
-        prods_filename = "products_{0}.mat".format(self.n_classes)
-        sio.savemat(prods_filename, {"stored": products}, do_compression=True)
-        end = time.time()
-        print("Elapsed time storing the products {0} secs.".format(end - start))
+        return products
 
     def calculate_metrics(self, rankings, train_labels, test_labels):
         ###           Calculates mAP and 5 random precision queries          ###
@@ -247,5 +210,51 @@ class Evaluation:
         s = "Elapsed time calculating metrics: {0}".format(elapsed_time)
         self.log += s + "\n"
         print (s)
+
+    def store_hash(self, wta_hash):
+        ## Store the hash in a binary file
+        print("Storing the hash in a file ...")
+        start = time.time()
+        hash_filename = "results/wtahash_{0}.obj".format(self.n_classes)
+        pickle.dump(wta_hash, open(hash_filename, "wb"), protocol=2)
+        end = time.time()
+        elapsed_time = utils.humanize_time(end - start)
+        s = "Elapsed time storing the hash {0}".format(elapsed_time)
+        self.log += s + "\n"
+        print(s)
+
+    def store_rankings(self, rankings):
+        ## Store the rankings in a csv file
+        print("Storing rankings in a mat file ...")
+        start = time.time()
+        rankings_filename = "results/rankings_{0}.mat".format(self.n_classes)
+        data = {"stored": rankings}
+        sio.savemat(rankings_filename, data, do_compression=True)
+        end = time.time()
+        s = "Elapsed time storing the rankings {0} secs.".format(end - start)
+        self.log += s + "\n"
+        print(s)
+
+    def store_labels(self, train_labels, test_labels):
+        ## Store the labels in a text file
+        print("Storing the labels in text files...")
+        start = time.time()
+        train_labels_fn = "results/train_labels_{0}.txt".format(self.n_classes)
+        test_labels_fn = "results/test_labels_{0}.txt".format(self.n_classes)
+        utils.write_list(train_labels, train_labels_fn)
+        utils.write_list(test_labels, test_labels_fn)
+        end = time.time()
+        s = "Elapsed time storing the labels {0} secs.".format(end - start)
+        self.log += s + "\n"
+        print(s)
+
+    def store_products(self, products):
+        # Write products in a mat file
+        print("Storing products in a mat file ...")
+        start = time.time()
+        prods_filename = "results/products_{0}.mat".format(self.n_classes)
+        sio.savemat(prods_filename, {"stored": products}, do_compression=True)
+        end = time.time()
+        print("Elapsed time storing the products {0} secs.".format(end - start))
         
         
