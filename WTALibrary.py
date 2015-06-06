@@ -217,8 +217,9 @@ def ObtenerValoresTotalesWTA(listWTAClasif, listWTAImagenes, tablahash):
 		if matrizValoresWTAClasif is None:
 			matrizValoresWTAClasif = np.array(auxWTAIndice, dtype=np.uint32)
 		else:
+			rankingEnInt = np.array(auxWTAIndice, dtype=np.uint32)
 			matrizValoresWTAClasif = np.vstack(
-				(matrizValoresWTAClasif, np.array(auxWTAIndice, dtype=np.uint32)
+				(matrizValoresWTAClasif, rankingEnInt)
 			)
 	avg_time = total_time / float(len(listWTAImagenes))
 	print ("Average time in finding a ranking is {0}".format(avg_time))
