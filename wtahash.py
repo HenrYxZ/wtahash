@@ -23,9 +23,11 @@ class WTAHash:
 	def __init__(self, objects, n, k, w):
 		# classifiers = self.load_classifiers(path)
 		self.permutations = wta.CrearPermutaciones(objects[0], n)
-		print ("Permutations ready, converting to WTA")
+		print("Permutations ready, converting to WTA")
 		ConvWTAClas = wta.ConvertirenWTA(objects, self.permutations, n, k, w)
+		print("Objects converted to WTA, passing from binary to int")
 		self.classifiersBW = wta.GetinBinaryMayor(ConvWTAClas)
+		print("Convertion ready, now creating the hash table")
 		self.whash = wta.CrearTablaHash(self.classifiersBW, ConvWTAClas)
 		
 		self.n = n
