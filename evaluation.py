@@ -127,7 +127,7 @@ class Evaluation:
         end = time.time()
         elapsed_time = utils.humanize_time(end - start)
         s = "Elapsed time storing the hash {0}".format(elapsed_time)
-        log += s + "\n"
+        self.log += s + "\n"
         print(s)
 
     def get_rankings(self, test_data, wta_hash):
@@ -201,7 +201,7 @@ class Evaluation:
         end = time.time()
         elapsed_time = utils.humanize_time(end - start)
         s = "Elapsed time calculating dot products: {0}".format(elapsed_time)
-        log += s + "\n"
+        self.log += s + "\n"
         print (s)
 
         # Write products in a mat file
