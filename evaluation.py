@@ -229,7 +229,7 @@ class Evaluation:
         start = time.time()
         rankings_filename = "results/rankings_{0}.mat".format(self.n_classes)
         data = {"stored": rankings}
-        sio.savemat(rankings_filename, data, do_compression=True)
+        sio.savemat(rankings_filename, data)
         end = time.time()
         s = "Elapsed time storing the rankings {0} secs.".format(end - start)
         self.log += s + "\n"
@@ -253,7 +253,7 @@ class Evaluation:
         print("Storing products in a mat file ...")
         start = time.time()
         prods_filename = "results/products_{0}.mat".format(self.n_classes)
-        sio.savemat(prods_filename, {"stored": products}, do_compression=True)
+        sio.savemat(prods_filename, {"stored": products})
         end = time.time()
         print("Elapsed time storing the products {0} secs.".format(end - start))
         
