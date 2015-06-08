@@ -132,7 +132,6 @@ class Evaluation:
         print ("Generating ranking matrix for the test set ...")
         start = time.time()
         rankings = wta_hash.best_classifiers(test_data)
-        rankings = np.array(rankings, dtype=np.uint32)
         end = time.time()
         elapsed_time = utils.humanize_time(end - start)
         s = "Elapsed time generating ranking matrix: {0}".format(elapsed_time)

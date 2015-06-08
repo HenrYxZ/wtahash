@@ -4,7 +4,7 @@ by: Cristobal Guell
 import random
 import math
 import time
-import numpy
+import numpy as np
 
 def CrearPermutaciones(vector, n):
 	numero = 0
@@ -77,7 +77,7 @@ def wtahash(vector, k, n, w, permutaciones):
 	# -> [array[0011], array[0010], array[1001], array[0001], ...]
 
 	# OJO para w = 2 y n = 4096 el largo de auxsplit es 2048
-	auxsplit = numpy.array_split(binariofinal, w)
+	auxsplit = np.array_split(binariofinal, w)
 	list1 = []
 
 	for auxlist in range(len(auxsplit)):
@@ -196,7 +196,7 @@ def FindBestClassifiers(TodosVEctoresWTAClasif, WTA1Imagen, TabladeHash):
 	return ClasificadoresTop	
 
 def ObtenerValoresTotalesWTA(listWTAClasif, listWTAImagenes, tablahash):
-	listaValoresWTAClasif = []
+	matrizValoresWTAClasif = None
 	total_time = 0
 	for auxWTAimagenes in range(len(listWTAImagenes)):
 		start = time.time()
@@ -214,7 +214,13 @@ def ObtenerValoresTotalesWTA(listWTAClasif, listWTAImagenes, tablahash):
 					auxWTAimagenes, len(listWTAImagenes), porcentaje
 				)
 			)
-		listaValoresWTAClasif.append(auxWTAIndice)
+		if matrizValoresWTAClasif is None:
+			matrizValoresWTAClasif = np.array(auxWTAIndice, dtype=np.uint32)
+		else:
+			rankingEnInt = np.array(auxWTAIndice, dtype=np.uint32)
+			matrizValoresWTAClasif = np.vstack(
+				(matrizValoresWTAClasif, rankingEnInt)
+			)
 	avg_time = total_time / float(len(listWTAImagenes))
 	print ("Average time in finding a ranking is {0}".format(avg_time))
-	return listaValoresWTAClasif
+	return matrizValoresWTAClasif
