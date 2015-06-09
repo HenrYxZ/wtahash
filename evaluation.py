@@ -68,7 +68,7 @@ class Evaluation:
             rankings = data["stored"]
         else:
             rankings = self.get_rankings(test_data, wta_hash)
-            self.store_rankings(rankings)
+            self.store_rankings(rankings, ranking_size)
             self.store_labels(train_labels, test_labels)
 
         # Dot products
@@ -227,7 +227,7 @@ class Evaluation:
         print("Storing rankings in a mat file ...")
         start = time.time()
         rankings_filename = "results/rankings_{0}.mat".format(self.n_classes)
-        data = {"stored": rankings[:][:ranking_size]}
+        data = {"stored": rankings}
         sio.savemat(rankings_filename, data)
         end = time.time()
         s = "Elapsed time storing the rankings {0} secs.".format(end - start)
