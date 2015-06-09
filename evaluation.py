@@ -68,7 +68,7 @@ class Evaluation:
             rankings = data["stored"]
         else:
             rankings = self.get_rankings(test_data, wta_hash)
-            self.store_rankings(rankings)
+            self.store_rankings(rankings, ranking_size)
             self.store_labels(train_labels, test_labels)
 
         # Dot products
