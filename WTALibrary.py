@@ -196,7 +196,8 @@ def FindBestClassifiers(TodosVEctoresWTAClasif, WTA1Imagen, TabladeHash):
 	return ClasificadoresTop	
 
 def ObtenerValoresTotalesWTA(listWTAClasif, listWTAImagenes, tablahash):
-	matrizValoresWTAClasif = None
+	# matrizValoresWTAClasif = None
+	matrizValoresWTAClasif = []
 	total_time = 0
 	for auxWTAimagenes in range(len(listWTAImagenes)):
 		start = time.time()
@@ -214,13 +215,14 @@ def ObtenerValoresTotalesWTA(listWTAClasif, listWTAImagenes, tablahash):
 					auxWTAimagenes, len(listWTAImagenes), porcentaje
 				)
 			)
-		if matrizValoresWTAClasif is None:
-			matrizValoresWTAClasif = np.array(auxWTAIndice, dtype=np.uint32)
-		else:
-			rankingEnInt = np.array(auxWTAIndice, dtype=np.uint32)
-			matrizValoresWTAClasif = np.vstack(
-				(matrizValoresWTAClasif, rankingEnInt)
-			)
+		matrizValoresWTAClasif.append(auxWTAIndice)
+		# if matrizValoresWTAClasif is None:
+		# 	matrizValoresWTAClasif = np.array(auxWTAIndice, dtype=np.uint32)
+		# else:
+		# 	rankingEnInt = np.array(auxWTAIndice, dtype=np.uint32)
+		# 	matrizValoresWTAClasif = np.vstack(
+		# 		(matrizValoresWTAClasif, rankingEnInt)
+		# 	)
 	avg_time = total_time / float(len(listWTAImagenes))
 	print ("Average time in finding a ranking is {0}".format(avg_time))
 	return matrizValoresWTAClasif
