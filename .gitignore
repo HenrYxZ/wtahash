@@ -1,7 +1,8 @@
 # Data files
 *.csv
 airplane/
-results.txt
+results/
+*wtahash*.obj
 
 # IDE
 .idea/

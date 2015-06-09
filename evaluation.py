@@ -199,7 +199,9 @@ class Evaluation:
         # utils.write_list(queries, "queries.txt")
         # Get average precisions
         avg_precs = [utils.average_precision(rel_rk) for rel_rk in rel_ranks]
-        utils.write_list(avg_precs, "avg_precs.txt")
+        utils.write_list(
+            avg_precs, "results/avg_precs_{0}.txt".format(self.n_classes)
+        )
         mean_avg_prec = np.mean(avg_precs)
         s = "mean average precision = {0}".format(mean_avg_prec)
         self.log += s + "\n"
