@@ -183,7 +183,10 @@ def FindBestClassifiers(TodosVEctoresWTAClasif, WTA1Imagen, TabladeHash):
 	Ayuda = 99999
 	ClasificadoresTop = []
 	#print AuxSort
-	for auxSort2 in range(len(TodosVEctoresWTAClasif)):
+	# for auxSort2 in range(len(TodosVEctoresWTAClasif)):
+	# DEBUGGIN!
+	ranking_size = min((2500, len(TodosVEctoresWTAClasif)))
+	for auxSort2 in range(ranking_size):
 		#while(329 > auxSort2):
 		MayorMomentaneo = AuxSort[auxSort2]
 		if Ayuda == MayorMomentaneo:

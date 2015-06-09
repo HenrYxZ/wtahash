@@ -35,7 +35,6 @@ class Evaluation:
         k = 16
         w = 2
         n = 1200
-        ranking_size = 2500
         # Percentage of the data that will be used for training, the rest is 
         # testing
         train_perc = 80
@@ -68,6 +67,7 @@ class Evaluation:
             rankings = data["stored"]
         else:
             rankings = self.get_rankings(test_data, wta_hash)
+            ranking_size = min((2500, len(rankings[0])) 
             self.store_rankings(rankings, ranking_size)
             self.store_labels(train_labels, test_labels)
 
