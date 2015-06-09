@@ -1,4 +1,5 @@
 import utils
+import scipy.io as sio
 
 ''' 
 Testing precision recall function for ranking retrieval
@@ -18,3 +19,7 @@ r2 = ["F", "R", "F", "F", "R", "R", "R", "F", "F", "F"]
 # print("precision = {0}".format(precision))
 # print("recall = {0}".format(recall))
 # print("interpolated_p = {0}".format(interpolated_p))
+
+def test_rankings():
+	rankings = sio.loadmat(open("results/rankings_2.mat", "rb"))
+	print("rankings = {0}".format(rankings))
