@@ -21,8 +21,11 @@ def test_prec_recall():
 	print("interpolated_p = {0}".format(interpolated_p))
 
 def test_rankings():
-	rankings = sio.loadmat(open("results/rankings_2.mat", "rb"))
-	print("rankings = {0}".format(rankings))
+	data = sio.loadmat(open("results/rankings_2.mat", "rb"))
+	print("data = {0}".format(data))
+	rankings = data["stored"]
+	print("rankings shape = {0}".format(rankings.shape))
+	print("rankings[:10][:5] = {0}".format(rankings[:10][:5]))
 
 if __name__ == '__main__':
 	test_rankings()
