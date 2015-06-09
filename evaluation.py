@@ -67,7 +67,7 @@ class Evaluation:
             rankings = data["stored"]
         else:
             rankings = self.get_rankings(test_data, wta_hash)
-            ranking_size = min((2500, len(rankings)))
+            ranking_size = min((2500, len(train_data)))
             self.store_rankings(rankings, ranking_size)
             self.store_labels(train_labels, test_labels)
 
