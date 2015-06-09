@@ -222,12 +222,12 @@ class Evaluation:
         self.log += s + "\n"
         print(s)
 
-    def store_rankings(self, rankings):
+    def store_rankings(self, rankings, ranking_size):
         ## Store the rankings in a csv file
         print("Storing rankings in a mat file ...")
         start = time.time()
         rankings_filename = "results/rankings_{0}.mat".format(self.n_classes)
-        data = {"stored": rankings}
+        data = {"stored": rankings[:][:ranking_size]}
         sio.savemat(rankings_filename, data, do_compression=True)
         end = time.time()
         s = "Elapsed time storing the rankings {0} secs.".format(end - start)
