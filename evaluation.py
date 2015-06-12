@@ -36,7 +36,6 @@ class Evaluation:
         k = 16
         w = 2
         n = 1200
-        ranking_size = 2500
         # Percentage of the data that will be used for training, the rest is 
         # testing
         train_perc = 80
@@ -69,7 +68,8 @@ class Evaluation:
             rankings = data["stored"]
         else:
             rankings = self.get_rankings(test_data, wta_hash)
-            self.store_rankings(rankings)
+            ranking_size = min((2500, len(train_data)))
+            self.store_rankings(rankings, ranking_size)
             self.store_labels(train_labels, test_labels)
 
         # Dot products
@@ -205,7 +205,9 @@ class Evaluation:
         # utils.write_list(queries, "queries.txt")
         # Get average precisions
         class_avg_precs = [utils.class_ap(rel_rk) for rel_rk in rel_ranks]
-        utils.write_list(avg_precs, "avg_precs.txt")
+        utils.write_list(
+            avg_precs, "results/avg_precs_{0}.txt".format(self.n_classes)
+        )
         mean_avg_prec = np.mean(avg_precs)
         s = "mean average precision = {0}".format(mean_avg_prec)
         self.log += s + "\n"
@@ -228,7 +230,7 @@ class Evaluation:
         self.log += s + "\n"
         print(s)
 
-    def store_rankings(self, rankings):
+    def store_rankings(self, rankings, ranking_size):
         ## Store the rankings in a csv file
         print("Storing rankings in a mat file ...")
         start = time.time()
