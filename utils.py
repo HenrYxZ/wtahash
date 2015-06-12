@@ -24,7 +24,7 @@ def precision_recall(ranking):
             precisions.append(retrieved_inter_relevant / retrieved)
     return precisions, recalls
 
-def average_precision(ranking):
+def class_ap(ranking):
     precisions, recalls = precision_recall(ranking)
     return np.average(precisions)
 
@@ -84,3 +84,51 @@ def read_list(path):
             l.append(line)
     print("first line = {0}".format(l[0]))
     return l
+
+def prod_pos_prec(prod_indices, ranking):
+    ''' The precision of a given ranking about the real order of dot products.
+        The percentage of the biggest products that were ranked exactly in the
+        same position.
+    Args:
+        prod_indices (list of int): Indices in train data array for the
+            objects with the biggest dot products ordered descending.
+        ranking (array of int): The ranking has the index of the ranked object
+            for each element in the array.
+
+    Returns:
+        float: precision.
+    '''
+    ok = 0
+    ranking_size = len(prod_indices)
+    for i in range(ranking_size):
+        obj_index = prod_indices[i]
+        if obj_index == ranking[i]:
+            ok += 1
+    precision = (ok * 100 ) / float(ranking_size)
+    return precision
+
+def prod_set_prec(prod_indices, ranking):
+    ''' The precision of a given ranking about the real order of dot products.
+        The percentage of the biggest products that were ranked in the portion
+        of the size of the ranking.
+    Args:
+        prod_indices (list of int): Indices in train data array for the
+            objects with the biggest dot products ordered descending.
+        ranking (array of int): The ranking has the index of the ranked object
+            for each element in the array.
+
+    Returns:
+        float: precision.
+    '''
+    ok = 0
+    ranking_size = len(prod_indices)
+    not_seen = prod_indices
+    for i in range(ranking_size):
+        current_index = ranking[i]
+        for j in range(ranking_size):
+            if current_index == not_seen[j]:
+                ok += 1
+                del not_seen[j]
+                break
+    precision = (ok * 100) / float(ranking_size)
+    return precision

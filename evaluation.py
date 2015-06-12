@@ -4,6 +4,7 @@ import scipy.io as sio
 from sklearn.preprocessing import normalize
 from datetime import datetime
 import cPickle as pickle
+from heapq import heappush, heappop
 
 # local modules
 import wtahash as wh
@@ -143,23 +144,28 @@ class Evaluation:
     def dot_products(self, train_data, test_data, rankings, ranking_size):
         ###                Calculate dot product on the variables            ###
         ###------------------------------------------------------------------###
+        # The heap of dot products with max size = ranking_size
 
-        print ("Calculating dot product on the rankings ...")
+        print ("Calculating dot products on the rankings ...")
         start = time.time()
         # products is the matrix that stores the dot product of each testing 
         # vector with each training vector
-        products = np.zeros((len(rankings), ranking_size), dtype=np.float32)
         step = (len(test_data) * 5) / 100
+        train_norm = [utils.norm(train_vec) for train_vec in train_data]
+        train_norm = np.array(train_norm)
         for i in range(len(test_data)):
             # y is the current testing vector
             y = test_data[i]
             y_norm = normalize(y[:, np.newaxis], axis=0).ravel()
-            for j in range(ranking_size):
+            current_products = []
+            for j in range(len(train_data)):
                 # vector is the training object ranked in the current position
                 vector_index = rankings[i][j]
-                vector = train_data[vector_index]
-                vector_norm = normalize(vector[:, np.newaxis], axis=0).ravel()
-                products[i][j] = np.dot(y_norm, vector_norm)
+                vector_norm = train_norm[j]
+                products.append((j, np.dot(y_norm, vector_norm)))
+            current_products = np.array(current_products)
+            np.sort(current_products)
+            products.append(current_products[:ranking_size])
             if i % step == 0:
                 percentage = (i * 100) / len(test_data)
                 print (
@@ -172,7 +178,7 @@ class Evaluation:
         s = "Elapsed time calculating dot products: {0}".format(elapsed_time)
         self.log += s + "\n"
         print (s)
-        return products
+        return np.array(products)
 
     def calculate_metrics(self, rankings, train_labels, test_labels):
         ###           Calculates mAP and 5 random precision queries          ###
@@ -198,7 +204,7 @@ class Evaluation:
         #     queries.append(utils.interpolate_p(precisions))
         # utils.write_list(queries, "queries.txt")
         # Get average precisions
-        avg_precs = [utils.average_precision(rel_rk) for rel_rk in rel_ranks]
+        class_avg_precs = [utils.class_ap(rel_rk) for rel_rk in rel_ranks]
         utils.write_list(avg_precs, "avg_precs.txt")
         mean_avg_prec = np.mean(avg_precs)
         s = "mean average precision = {0}".format(mean_avg_prec)
