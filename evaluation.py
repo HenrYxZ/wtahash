@@ -236,7 +236,7 @@ class Evaluation:
         )
         utils.write_list(class_ap, class_ap_filename)
         class_map = np.mean(class_ap)
-        self.log += "ranking size = {0}".format(ranking_size) + "\n"
+        self.log += "ranking size = {0}".format(len(rankings[0])) + "\n"
         s = "classification mean average precision = {0}".format(class_map)
         self.log += s + "\n"
         print(s)
