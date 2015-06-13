@@ -56,7 +56,7 @@ class Evaluation:
         else:
             wta_hash = self.create_hash(train_data, n, k, w)
             if opt_load == STORE_HASH:
-                store_hash(wta_hash)
+                self.store_hash(wta_hash)
 
         # Testing
         #-----------------------------------------------------------------------
