@@ -23,13 +23,18 @@ class Evaluation:
             "(0 for all).\n"
         self.n_classes = input(s)
         s = "Choose an option:\n"\
-            "- [0] Calculate hash and rankings.\n"\
-            "- [1] Load stored values of hash and rankings.\n"
+            "- [0] Calculate WTA Hash.\n"\
+            "- [1] Load a stored WTA Hash.\n"\
+            "- [2] Calculate WTA Hash and store it.\n"
         opt_load = input(s)
         k = 16
         w = 2
         n = 1200
-        s = "Enter the ranking size you want to use\n"
+
+        LOAD_HASH = 1
+        STORE_HASH = 2
+
+        s = "Enter the ranking size you want to use.\n"
         ranking_size = input(s)
         # Percentage of the data that will be used for training, the rest is 
         # testing
@@ -45,12 +50,13 @@ class Evaluation:
         # Training
         #-----------------------------------------------------------------------
         train_data, train_labels = self.read_descriptors(train_perc, "training")
-        if opt_load == 1:
+        if opt_load == LOAD_HASH:
             hash_filename = "results/wtahash_{0}.obj".format(self.n_classes)
             wta_hash = pickle.load(open(hash_filename, "rb"))
         else:
             wta_hash = self.create_hash(train_data, n, k, w)
-            # store_hash(wta_hash)
+            if opt_load == STORE_HASH:
+                store_hash(wta_hash)
 
         # Testing
         #-----------------------------------------------------------------------
@@ -66,7 +72,7 @@ class Evaluation:
         sorted_prods, prods = self.dot_products(
             train_data, test_data, rankings, ranking_size
         )
-        self.store_products(prods)
+        self.store_products(sorted_prods, prods)
 
         # Precision metrics
         #-----------------------------------------------------------------------
@@ -209,7 +215,7 @@ class Evaluation:
         return sorted_prods, np.array(products)
 
     def metrics(self, rankings, train_labels, test_labels, sorted_prods):
-        ###           Calculates mAP and 5 random precision queries          ###
+        ###    Calculates classification and products set and position mAP   ###
         ###------------------------------------------------------------------###
         
         print("Starting to calculate metrics ...")
@@ -221,17 +227,6 @@ class Evaluation:
                     rankings[i], train_labels, test_labels[i]
                 )
             )
-        # Take 5 random queries
-        # n_queries = 5
-        # sample_indices = np.random.choice(len(rankings), n_queries, replace=False)
-        # sample = [rel_ranks[index] for index in sample_indices]
-        # # Get precision-recall for each query
-        # queries = []
-        # for ranking in sample:
-        #     precisions = utils.precision_fixed_recall(ranking)
-        #     queries.append(utils.interpolate_p(precisions))
-        # utils.write_list(queries, "queries.txt")
-        # Get average precisions
 
         # Classification mAP
         #-----------------------------------------------------------------------
@@ -284,7 +279,9 @@ class Evaluation:
         s = "Elapsed time calculating metrics: {0}".format(elapsed_time)
         self.log += s + "\n"
         print (s)
-
+    ############################################################################
+    ####                    Functions for storing values                    ####
+    ############################################################################
     def store_hash(self, wta_hash):
         ## Store the hash in a binary file
         print("Storing the hash in a file ...")
@@ -322,7 +319,7 @@ class Evaluation:
         self.log += s + "\n"
         print(s)
 
-    def store_products(self, products, sorted_prods):
+    def store_products(self, sorted_prods, products):
         # Write products in a mat file
         print("Storing products in a mat file ...")
         start = time.time()
