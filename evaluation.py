@@ -73,19 +73,15 @@ class Evaluation:
 
         # Dot products
         #-----------------------------------------------------------------------
-        if opt_prod == 0:
-            prods = self.dot_products(
-                train_data, test_data, rankings, ranking_size
-            )
-            self.store_products(prods)
-        else:
-            prods_filename = "results/products_{0}.mat"
-            prods = sio.loadmat(prods_filename)
+        sorted_prods, prods = self.dot_products(
+            train_data, test_data, rankings, ranking_size
+        )
+        self.store_products(prods)
 
         # Precision metrics
         #-----------------------------------------------------------------------
         # Generate relevance rankings
-        self.calculate_metrics(rankings, train_labels, test_labels, prods)
+        self.metrics(rankings, train_labels, test_labels, sorted_prods)
         end_time = datetime.now()
         self.log += "Ending time {0}\n".format(end_time)
         # Write times in a text file
@@ -161,13 +157,24 @@ class Evaluation:
             ranking_size (int): The number of relevant elements in the ranking.
 
         Returns:
-            list of list of tuples {
+            list of list of tuples { 
+                e.g.:
+                         0             ranking_size
+                         |                  |
+                0 - [[(21, 0.91), (3, 0.87), ...],
+                     [(10, 0.83), (0, 0.72), ...],
+                             ...
+   len(test_data) -  [                      ... ]]
+
                 int: Index of the object in the train set that should be ranked
                     in the i-th position where i is the number of the row,
                 float: The value of the dot product between the object in the
                     train set and the object in the test set in the i-th 
                     position where i is the number of the row. 
-            }
+            },
+            numpy array of arrays of floats: Dot products where the [i-th, j-th]
+                element is the product between the i-th object of the testing
+                set and the j-th object of the training set. 
         '''
         ###                Calculate dot product on the variables            ###
         ###------------------------------------------------------------------###
@@ -176,6 +183,8 @@ class Evaluation:
         start = time.time()
         # products is the matrix that stores the dot product of each testing 
         # vector with each training vector
+        sorted_prods = []
+        products = []
         step = (len(test_data) * 5) / 100
         train_norm = [utils.normalize(train_vec) for train_vec in train_data]
         train_norm = np.array(train_norm)
@@ -183,14 +192,18 @@ class Evaluation:
             # y is the current testing vector
             y = test_data[i]
             y_norm = utils.normalize(y)
-            current_products = []
+            current_tuples = []
+            products.append([])
             for j in range(len(train_data)):
                 # vector is the training object ranked in the current position
                 vector_index = rankings[i][j]
                 vector_norm = train_norm[j]
-                current_products.append((j, np.dot(y_norm, vector_norm)))
-            current_products.sort(key=lambda x: x[1], reverse=True)
-            products.append(current_products[:ranking_size])
+                prod = np.dot(y_norm, vector_norm)
+                if j < ranking_size:
+                    products[i].append(prod)
+                current_tuples.append( (j, prod) )
+            current_tuples.sort(key=lambda x: x[1], reverse=True)
+            sorted_prods.append(current_tuples[:ranking_size])
             if i % step == 0:
                 percentage = (i * 100) / len(test_data)
                 print (
@@ -203,9 +216,9 @@ class Evaluation:
         s = "Elapsed time calculating dot products: {0}".format(elapsed_time)
         self.log += s + "\n"
         print (s)
-        return products
+        return sorted_prods, np.array(products)
 
-    def calculate_metrics(self, rankings, train_labels, test_labels, products):
+    def metrics(self, rankings, train_labels, test_labels, sorted_prods):
         ###           Calculates mAP and 5 random precision queries          ###
         ###------------------------------------------------------------------###
         
@@ -247,7 +260,7 @@ class Evaluation:
         # Set
         set_prec = []
         for i in range(len(rankings)):
-            indices = [prods[0] for prods in products[i]]
+            indices = [prods[0] for prods in sorted_prods[i]]
             precision = utils.prod_set_prec(indices, rankings[i])
             set_prec.append(precision)
         set_ap_filename = "results/set_avg_precs_{0}.txt".format(
@@ -262,7 +275,7 @@ class Evaluation:
         # Position
         pos_prec = []
         for i in range(len(rankings)):
-            indices = [prods[0] for prods in products[i]]
+            indices = [prods[0] for prods in sorted_prods[i]]
             precision = utils.prod_pos_prec(indices, rankings[i])
             pos_prec.append(precision)
         pos_ap_filename = "results/pos_avg_precs_{0}.txt".format(
