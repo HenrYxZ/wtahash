@@ -1,5 +1,6 @@
 import utils
 import scipy.io as sio
+import numpy as np
 
 ''' 
 Testing precision recall function for ranking retrieval
@@ -27,5 +28,40 @@ def test_rankings():
 	print("rankings shape = {0}".format(rankings.shape))
 	print("rankings[:10][:5] = {0}".format(rankings[:10][:5]))
 
+def test_dot_prod_prec():
+    # values = np.random.random_sample(10) * 100
+    # prods = [(i, values[i]) for i in range(len(values))]
+    # print("prods =\n{0}".format(prods))
+    # prods.sort(key=lambda x: x[1], reverse=True)
+    # print("ordered prods=\n{0}".format(prods))
+    ordered_prods = [(1, 73.50),
+                     (7, 62.47),
+                     (3, 57.34),
+                     (2, 42.22), 
+                     (6, 40.87),
+                     (5, 25.02), 
+                     (0, 20.33), 
+                     (8, 15.99), 
+                     (9, 14.74), 
+                     (4, 7.89)]
+    ranking = np.array([1,
+                        28, 
+                        3, 
+                        50, 
+                        60, 
+                        4, 
+                        5, 
+                        8, 
+                        0, 
+                        10])
+    ids = [prod[0] for prod in ordered_prods]
+    print("ids = {0}".format(ids))
+    # prod pos prec 0.3
+    pos_prec = utils.prod_pos_prec(ids, ranking)
+    print("prod pos prec = {0}".format(pos_prec))
+    # prod set prec 0.6
+    set_prec = utils.prod_set_prec(ids, ranking)
+    print("prod pos prec = {0}".format(set_prec))
+
 if __name__ == '__main__':
-	test_rankings()
+	test_dot_prod_prec()

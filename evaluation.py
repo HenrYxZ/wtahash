@@ -36,6 +36,7 @@ class Evaluation:
         k = 16
         w = 2
         n = 1200
+        ranking_size = 100
         # Percentage of the data that will be used for training, the rest is 
         # testing
         train_perc = 80
@@ -68,7 +69,6 @@ class Evaluation:
             rankings = data["stored"]
         else:
             rankings = self.get_rankings(test_data, wta_hash)
-            ranking_size = min((2500, len(train_data)))
             self.store_rankings(rankings, ranking_size)
             self.store_labels(train_labels, test_labels)
 
@@ -79,11 +79,14 @@ class Evaluation:
                 train_data, test_data, rankings, ranking_size
             )
             self.store_products(prods)
+        else:
+            prods_filename = "results/products_{0}.mat"
+            prods = sio.loadmat(prods_filename)
 
         # Precision metrics
         #-----------------------------------------------------------------------
         # Generate relevance rankings
-        self.calculate_metrics(rankings, train_labels, test_labels)
+        self.calculate_metrics(rankings, train_labels, test_labels, prods)
         end_time = datetime.now()
         self.log += "Ending time {0}\n".format(end_time)
         # Write times in a text file
@@ -142,9 +145,33 @@ class Evaluation:
         return rankings
 
     def dot_products(self, train_data, test_data, rankings, ranking_size):
+        ''' Calculates the dot product for each element in the test set with
+            every element of the train set. Returns a matrix with two columns
+            matrix. The first column is the index of the object in the train set
+            and the second column is the value of the dot product of that object
+            with the test object with index equal to the number of the row. Then
+            the number of rows is the number of objects in the test set.
+
+        Args:
+            train_data (np matrix of floats): Each row is the vector of an
+                object in the train set.
+            test_data (np matrix of floats): Each row is the vector of an object
+                in the test set.
+            rankings (list of lists int): The ranking created for each object
+                in the test set.
+            ranking_size (int): The number of relevant elements in the ranking.
+
+        Returns:
+            list of list of tuples {
+                int: Index of the object in the train set that should be ranked
+                    in the i-th position where i is the number of the row,
+                float: The value of the dot product between the object in the
+                    train set and the object in the test set in the i-th 
+                    position where i is the number of the row. 
+            }
+        '''
         ###                Calculate dot product on the variables            ###
         ###------------------------------------------------------------------###
-        # The heap of dot products with max size = ranking_size
 
         print ("Calculating dot products on the rankings ...")
         start = time.time()
@@ -162,9 +189,8 @@ class Evaluation:
                 # vector is the training object ranked in the current position
                 vector_index = rankings[i][j]
                 vector_norm = train_norm[j]
-                products.append((j, np.dot(y_norm, vector_norm)))
-            current_products = np.array(current_products)
-            np.sort(current_products)
+                current_products.append((j, np.dot(y_norm, vector_norm)))
+            current_products.sort(key=lambda x: x[1], reverse=True)
             products.append(current_products[:ranking_size])
             if i % step == 0:
                 percentage = (i * 100) / len(test_data)
@@ -178,9 +204,9 @@ class Evaluation:
         s = "Elapsed time calculating dot products: {0}".format(elapsed_time)
         self.log += s + "\n"
         print (s)
-        return np.array(products)
+        return products
 
-    def calculate_metrics(self, rankings, train_labels, test_labels):
+    def calculate_metrics(self, rankings, train_labels, test_labels, products):
         ###           Calculates mAP and 5 random precision queries          ###
         ###------------------------------------------------------------------###
         
@@ -204,14 +230,52 @@ class Evaluation:
         #     queries.append(utils.interpolate_p(precisions))
         # utils.write_list(queries, "queries.txt")
         # Get average precisions
-        class_avg_precs = [utils.class_ap(rel_rk) for rel_rk in rel_ranks]
-        utils.write_list(
-            avg_precs, "results/avg_precs_{0}.txt".format(self.n_classes)
+
+        # Classification mAP
+        #-----------------------------------------------------------------------
+        class_ap = [utils.class_ap(rel_rk) for rel_rk in rel_ranks]
+        class_ap_filename = "results/class_avg_precs_{0}.txt".format(
+            self.n_classes
         )
-        mean_avg_prec = np.mean(avg_precs)
-        s = "mean average precision = {0}".format(mean_avg_prec)
+        utils.write_list(class_ap, class_ap_filename)
+        class_map = np.mean(class_ap)
+        s = "classification mean average precision = {0}".format(class_map)
         self.log += s + "\n"
         print(s)
+
+        # Dot products average precision
+        #-----------------------------------------------------------------------
+        # Set
+        set_prec = []
+        for i in range(len(rankings)):
+            indices = [prods[0] for prods in products[i]]
+            precision = utils.prod_set_prec(indices, rankings[i])
+            set_prec.append(precision)
+        set_ap_filename = "results/set_avg_precs_{0}.txt".format(
+            self.n_classes
+        )
+        utils.write_list(set_prec, set_ap_filename)
+        set_map = np.mean(set_prec)
+        s = "set mean average precision = {0}".format(set_map)
+        self.log += s + "\n"
+        print(s)
+
+        # Position
+        pos_prec = []
+        for i in range(len(rankings)):
+            indices = [prods[0] for prods in products[i]]
+            precision = utils.prod_pos_prec(indices, rankings[i])
+            pos_prec.append(precision)
+        pos_ap_filename = "results/pos_avg_precs_{0}.txt".format(
+            self.n_classes
+        )
+        utils.write_list(pos_prec, pos_ap_filename)
+        pos_map = np.mean(pos_prec)
+        s = "position mean average precision = {0}".format(pos_map)
+        self.log += s + "\n"
+        print(s)
+
+
         end = time.time()
         elapsed_time = utils.humanize_time(end - start)
         s = "Elapsed time calculating metrics: {0}".format(elapsed_time)

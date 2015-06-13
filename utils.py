@@ -125,7 +125,7 @@ def prod_set_prec(prod_indices, ranking):
     not_seen = prod_indices
     for i in range(ranking_size):
         current_index = ranking[i]
-        for j in range(ranking_size):
+        for j in range(len(not_seen)):
             if current_index == not_seen[j]:
                 ok += 1
                 del not_seen[j]
