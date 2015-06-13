@@ -3,7 +3,6 @@ import numpy as np
 import scipy.io as sio
 from datetime import datetime
 import cPickle as pickle
-from heapq import heappush, heappop
 
 # local modules
 import wtahash as wh
@@ -27,15 +26,11 @@ class Evaluation:
             "- [0] Calculate hash and rankings.\n"\
             "- [1] Load stored values of hash and rankings.\n"
         opt_load = input(s)
-        s = "Choose an option:\n"\
-            "- [0] Calculate dot products.\n"\
-            "- [1] Don't calculate dot products.\n"
-            
-        opt_prod = input(s)
         k = 16
         w = 2
         n = 1200
-        ranking_size = 100
+        s = "Enter the ranking size you want to use\n"
+        ranking_size = input(s)
         # Percentage of the data that will be used for training, the rest is 
         # testing
         train_perc = 80
@@ -60,16 +55,11 @@ class Evaluation:
         # Testing
         #-----------------------------------------------------------------------
         test_data, test_labels = self.read_descriptors(train_perc, "testing")
-        if opt_load == 1:
-            rankings_filename = "results/rankings_{0}.mat".format(
-                self.n_classes
-            )
-            data = sio.loadmat(rankings_filename)
-            rankings = data["stored"]
-        else:
-            rankings = self.get_rankings(test_data, wta_hash)
-            self.store_rankings(rankings, ranking_size)
-            self.store_labels(train_labels, test_labels)
+        rankings = self.get_rankings(test_data, wta_hash)
+        if ranking_size > len(rankings[0]) or ranking_size < 0:
+            ranking_size = 100
+        self.store_rankings(rankings, ranking_size)
+        self.store_labels(train_labels, test_labels)
 
         # Dot products
         #-----------------------------------------------------------------------
@@ -251,6 +241,7 @@ class Evaluation:
         )
         utils.write_list(class_ap, class_ap_filename)
         class_map = np.mean(class_ap)
+        self.log += "ranking size = {0}".format(ranking_size) + "\n"
         s = "classification mean average precision = {0}".format(class_map)
         self.log += s + "\n"
         print(s)
@@ -331,12 +322,17 @@ class Evaluation:
         self.log += s + "\n"
         print(s)
 
-    def store_products(self, products):
+    def store_products(self, products, sorted_prods):
         # Write products in a mat file
         print("Storing products in a mat file ...")
         start = time.time()
         prods_filename = "results/products_{0}.mat".format(self.n_classes)
         sio.savemat(prods_filename, {"stored": products})
+        # e.g. elem = [(1, 0.94), (12, 0.83), (4, 0.6), ...]
+        #   indices = [1, 12, 4, ...]
+        indices = [elem[:, 0] for elem in sorted_prods]
+        ids_filename = "results/indices_{0}.mat".format(self.n_classes)
+        sio.savemat(ids_filename, {"stored": indices})
         end = time.time()
         print("Elapsed time storing the products {0} secs.".format(end - start))
         
