@@ -1,7 +1,6 @@
 import time
 import numpy as np
 import scipy.io as sio
-from sklearn.preprocessing import normalize
 from datetime import datetime
 import cPickle as pickle
 from heapq import heappush, heappop
@@ -178,12 +177,12 @@ class Evaluation:
         # products is the matrix that stores the dot product of each testing 
         # vector with each training vector
         step = (len(test_data) * 5) / 100
-        train_norm = [utils.norm(train_vec) for train_vec in train_data]
+        train_norm = [utils.normalize(train_vec) for train_vec in train_data]
         train_norm = np.array(train_norm)
         for i in range(len(test_data)):
             # y is the current testing vector
             y = test_data[i]
-            y_norm = normalize(y[:, np.newaxis], axis=0).ravel()
+            y_norm = utils.normalize(y)
             current_products = []
             for j in range(len(train_data)):
                 # vector is the training object ranked in the current position

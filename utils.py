@@ -1,4 +1,5 @@
 import numpy as np
+import sklearn.preprocessing as skproc
 
 def humanize_time(secs):
     # Extracted from http://testingreflections.com/node/6534
@@ -132,3 +133,6 @@ def prod_set_prec(prod_indices, ranking):
                 break
     precision = (ok * 100) / float(ranking_size)
     return precision
+
+def normalize(vector):
+    return skproc.normalize(vector[:, np.newaxis], axis=0).ravel()
