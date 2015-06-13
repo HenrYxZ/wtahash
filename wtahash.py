@@ -1,5 +1,7 @@
 ﻿import WTALibrary as wta
 import cluster
+import time
+import utils
 
 class WTAHash:
 	#Método interno, se usa para cargar los clasificadores
@@ -37,8 +39,15 @@ class WTAHash:
 	# Retorna un arreglo por cada vector de imagen con todos los clasificadores
 	# ordenados descendientemente según su score de matching
 	def best_classifiers(self, images):
+		start = time.time()
 		ConvWTAImage = wta.ConvertirenWTA(
 			images, self.permutations, self.n, self.k, self.w
+		)
+		end = time.time()
+		elapsed_time = utils.humanize_time(end - start)
+		print("Elapsed time converting test set to WTA binary {0}.".format(
+				elapsed_time
+			)
 		)
 		BW1 = wta.GetinBinaryMayor(ConvWTAImage)		
 		return wta.ObtenerValoresTotalesWTA(self.classifiersBW, BW1, self.whash)

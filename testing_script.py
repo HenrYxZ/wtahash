@@ -63,5 +63,35 @@ def test_dot_prod_prec():
     set_prec = utils.prod_set_prec(ids, ranking)
     print("prod pos prec = {0}".format(set_prec))
 
+def test_store_prods():
+    ordered_prods = [(1, 73.50),
+                     (7, 62.47),
+                     (3, 57.34),
+                     (2, 42.22), 
+                     (6, 40.87),
+                     (5, 25.02), 
+                     (0, 20.33), 
+                     (8, 15.99), 
+                     (9, 14.74), 
+                     (4, 7.89)]
+    ordered_prods_sec = [(4, 91.05),
+                         (8, 74.22), 
+                         (2, 71.66), 
+                         (1, 68.86),
+                         (7, 42.86), 
+                         (0, 40.09), 
+                         (3, 35.71), 
+                         (9, 32.09), 
+                         (6, 25.62), 
+                         (5, 23.52)]
+    sorted_prods = [ordered_prods, ordered_prods_sec]
+    return sorted_prods
+    # print("sorted_prods = \n{0}".format(sorted_prods))
+    # indices = []
+    # for i in len(sorted_prods):
+    #     indices.append([prod[0] for prod in sorted_prods[i]])
+    # print("indices = \n{0}".format(indices))
+
+
 if __name__ == '__main__':
-	test_dot_prod_prec()
+	test_store_prods()

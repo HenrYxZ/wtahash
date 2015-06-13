@@ -327,7 +327,7 @@ class Evaluation:
         sio.savemat(prods_filename, {"stored": products})
         # e.g. elem = [(1, 0.94), (12, 0.83), (4, 0.6), ...]
         #   indices = [1, 12, 4, ...]
-        indices = [elem[:, 0] for elem in sorted_prods]
+        indices = [ [prod[0] for prod in row] for row in sorted_prods]
         ids_filename = "results/indices_{0}.mat".format(self.n_classes)
         sio.savemat(ids_filename, {"stored": indices})
         end = time.time()
