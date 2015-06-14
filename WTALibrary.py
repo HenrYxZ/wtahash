@@ -165,7 +165,7 @@ def CrearTablaHash(ClasificadoresBit, ClasificadoresWTA):
 # clasificador que tenga un MATCH, finalmente se entrega en indice del mejor
 # clasificador
 	
-def FindBestClassifiers(TodosVEctoresWTAClasif, WTA1Imagen, TabladeHash):
+def FindBestClassifiers(TodosVEctoresWTAClasif, WTA1Imagen, TabladeHash, size):
 	ArregloVAcioClasif = [0] * len(TodosVEctoresWTAClasif)
 
 	for aux4 in range(len(WTA1Imagen)):
@@ -185,7 +185,8 @@ def FindBestClassifiers(TodosVEctoresWTAClasif, WTA1Imagen, TabladeHash):
 	#print AuxSort
 	# for auxSort2 in range(len(TodosVEctoresWTAClasif)):
 	# DEBUGGIN!
-	ranking_size = min((2500, len(TodosVEctoresWTAClasif)))
+	# USANDO LOS PRIMEROS size "Nearest Neighbors"
+	ranking_size = min((size, len(TodosVEctoresWTAClasif)))
 	for auxSort2 in range(ranking_size):
 		#while(329 > auxSort2):
 		MayorMomentaneo = AuxSort[auxSort2]
@@ -198,14 +199,14 @@ def FindBestClassifiers(TodosVEctoresWTAClasif, WTA1Imagen, TabladeHash):
 			Ayuda = MayorMomentaneo
 	return ClasificadoresTop	
 
-def ObtenerValoresTotalesWTA(listWTAClasif, listWTAImagenes, tablahash):
+def ObtenerValoresTotalesWTA(listWTAClasif, listWTAImagenes, tablahash, size):
 	# matrizValoresWTAClasif = None
 	matrizValoresWTAClasif = []
 	total_time = 0
 	for auxWTAimagenes in range(len(listWTAImagenes)):
 		start = time.time()
 		auxWTAIndice = FindBestClassifiers(
-			listWTAClasif, listWTAImagenes[auxWTAimagenes], tablahash
+			listWTAClasif, listWTAImagenes[auxWTAimagenes], tablahash, size
 		)
 		end = time.time()
 		elapsed_time = end - start

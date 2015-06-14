@@ -38,7 +38,7 @@ class WTAHash:
 	
 	# Retorna un arreglo por cada vector de imagen con todos los clasificadores
 	# ordenados descendientemente según su score de matching
-	def best_classifiers(self, images):
+	def best_classifiers(self, images, ranking_size):
 		start = time.time()
 		ConvWTAImage = wta.ConvertirenWTA(
 			images, self.permutations, self.n, self.k, self.w
@@ -50,4 +50,7 @@ class WTAHash:
 			)
 		)
 		BW1 = wta.GetinBinaryMayor(ConvWTAImage)		
-		return wta.ObtenerValoresTotalesWTA(self.classifiersBW, BW1, self.whash)
+		values = wta.ObtenerValoresTotalesWTA(
+			self.classifiersBW, BW1, self.whash, ranking_size
+		)
+		return values

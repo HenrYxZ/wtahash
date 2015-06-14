@@ -3,6 +3,7 @@
 airplane/
 results/
 *wtahash*.obj
+features/
 
 # IDE
 .idea/

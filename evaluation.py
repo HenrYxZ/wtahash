@@ -3,6 +3,7 @@ import numpy as np
 import scipy.io as sio
 from datetime import datetime
 import cPickle as pickle
+import sys
 
 # local modules
 import wtahash as wh
@@ -34,8 +35,10 @@ class Evaluation:
         LOAD_HASH = 1
         STORE_HASH = 2
 
-        s = "Enter the ranking size you want to use.\n"
+        s = "Enter the ranking size you want to use (from 1 to 100).\n"
         ranking_size = input(s)
+        if ranking_size > 100:
+            ranking_size = 100
         # Percentage of the data that will be used for training, the rest is 
         # testing
         train_perc = 80
@@ -52,6 +55,7 @@ class Evaluation:
         train_data, train_labels = self.read_descriptors(train_perc, "training")
         if opt_load == LOAD_HASH:
             hash_filename = "results/wtahash_{0}.obj".format(self.n_classes)
+            print("Loading hash from file {0}...".format(hash_filename))
             wta_hash = pickle.load(open(hash_filename, "rb"))
         else:
             wta_hash = self.create_hash(train_data, n, k, w)
@@ -61,16 +65,15 @@ class Evaluation:
         # Testing
         #-----------------------------------------------------------------------
         test_data, test_labels = self.read_descriptors(train_perc, "testing")
-        rankings = self.get_rankings(test_data, wta_hash)
-        if ranking_size > len(rankings[0]) or ranking_size < 0:
-            ranking_size = 100
-        self.store_rankings(rankings, ranking_size)
+        ranking_size = min((len(train_data), ranking_size))
+        rankings = self.get_rankings(test_data, wta_hash, ranking_size)
+        self.store_rankings(rankings)
         self.store_labels(train_labels, test_labels)
 
         # Dot products
         #-----------------------------------------------------------------------
         sorted_prods, prods = self.dot_products(
-            train_data, test_data, rankings, ranking_size
+            train_data, test_data, rankings
         )
         self.store_products(sorted_prods, prods)
 
@@ -120,13 +123,13 @@ class Evaluation:
 
         return wta_hash
 
-    def get_rankings(self, test_data, wta_hash):
+    def get_rankings(self, test_data, wta_hash, ranking_size):
         ###                   Get the rankings for the test set              ###
         ###------------------------------------------------------------------###
 
         print ("Generating ranking matrix for the test set ...")
         start = time.time()
-        rankings = wta_hash.best_classifiers(test_data)
+        rankings = wta_hash.best_classifiers(test_data, ranking_size)
         end = time.time()
         elapsed_time = utils.humanize_time(end - start)
         s = "Elapsed time generating ranking matrix: {0}".format(elapsed_time)
@@ -135,7 +138,7 @@ class Evaluation:
 
         return rankings
 
-    def dot_products(self, train_data, test_data, rankings, ranking_size):
+    def dot_products(self, train_data, test_data, rankings):
         ''' Calculates the dot product for each element in the test set with
             every element of the train set. Returns a matrix with two columns
             matrix. The first column is the index of the object in the train set
@@ -150,7 +153,6 @@ class Evaluation:
                 in the test set.
             rankings (list of lists int): The ranking created for each object
                 in the test set.
-            ranking_size (int): The number of relevant elements in the ranking.
 
         Returns:
             list of list of tuples { 
@@ -181,6 +183,7 @@ class Evaluation:
         # vector with each training vector
         sorted_prods = []
         products = []
+        ranking_size = len(rankings[0])
         step = (len(test_data) * 5) / 100
         train_norm = [utils.normalize(train_vec) for train_vec in train_data]
         train_norm = np.array(train_norm)
@@ -192,7 +195,6 @@ class Evaluation:
             products.append([])
             for j in range(len(train_data)):
                 # vector is the training object ranked in the current position
-                vector_index = rankings[i][j]
                 vector_norm = train_norm[j]
                 prod = np.dot(y_norm, vector_norm)
                 if j < ranking_size:
@@ -294,8 +296,8 @@ class Evaluation:
         self.log += s + "\n"
         print(s)
 
-    def store_rankings(self, rankings, ranking_size):
-        ## Store the rankings in a csv file
+    def store_rankings(self, rankings):
+        ## Store the rankings in a mat file
         print("Storing rankings in a mat file ...")
         start = time.time()
         rankings_filename = "results/rankings_{0}.mat".format(self.n_classes)
