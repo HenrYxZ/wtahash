@@ -31,7 +31,7 @@ def load_class(training_percentage, path, set_name):
     step = (len(my_range) * 5) / 100
     for i in my_range:
         index = i if set_name == "training" else i - training_count
-        if index % step == 0:
+        if step > 0 and index % step == 0:
             percentage = (index * 100) / len(my_range)
             print("Reading file {0} from {1}({2}%) ...".format(
                     index, len(my_range), percentage
