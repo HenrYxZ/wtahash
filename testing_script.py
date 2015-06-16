@@ -104,4 +104,7 @@ def test_inf_prod():
 
 
 if __name__ == '__main__':
+    start = time.time()
 	test_inf_prod()
+    end = time.time()
+    print("Elapsed time testing {0} seconds...".format(end - start))
