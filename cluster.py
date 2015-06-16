@@ -1,7 +1,7 @@
 import scipy.io as sio
 import glob
 import numpy as np
-
+import sys
 
 def load_class(training_percentage, path, set_name):
     '''Loads the objects for a class in the MSCoco dataset.
@@ -39,11 +39,11 @@ def load_class(training_percentage, path, set_name):
             )
         f = files[i]
         data = sio.loadmat(f)
-        features = np.array(data["stored"], dtype=np.float32)
+        features = np.array(data["stored"][0], dtype=np.float32)
         # Don't use infinity in any of the 4096 feature dimensions
         for j in range(len(features)):
             if features[j] == float("inf"):
-                feautres[j] = 0
+                features[j] = 0
                 print(
                     "Object {0} of {1} from class {2} has dim {3} inf".format(
                         i, len(files), class_name, j
