@@ -41,7 +41,7 @@ def load_class(training_percentage, path, set_name):
         data = sio.loadmat(f)
         features = np.array(data["stored"], dtype=np.float32)
         # Don't use infinity in any of the 4096 feature dimensions
-        for j in len(features):
+        for j in range(len(features)):
             if features[j] == float("inf"):
                 feautres[j] = 0
                 print(
