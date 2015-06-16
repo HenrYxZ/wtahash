@@ -100,7 +100,8 @@ def test_inf_prod():
     train_perc = 80
     n_clases = 40
     path = "/mnt/nas/GrimaRepo/datasets/mscoco/coco2014/crops/cropsFeats"
-    train_data = cluster.load_classes(train_perc, path, "training", n_clases)
+    # path = "./features"
+    train_data, _ = cluster.load_classes(train_perc, path, "training", n_clases)
     train_norm = [utils.normalize(train_vec) for train_vec in train_data]
 
 

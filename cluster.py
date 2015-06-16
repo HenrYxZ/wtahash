@@ -88,7 +88,7 @@ def load_classes(training_percentage, path, set_name, n_classes):
     # DEBUGGING ONLY USE 10 CLASSES
     # for i in range(len(folders)):
     step = (n_classes * 5) / 100
-    for i in range(20, n_classes):
+    for i in range(n_classes):
         percentage = (i * 100) / n_classes
         print("Reading class number {0} from {1} ({2}%) ...".format(
                 i, n_classes, percentage
