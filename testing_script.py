@@ -1,6 +1,9 @@
-import utils
 import scipy.io as sio
 import numpy as np
+
+# Local modules
+import utils
+import cluster
 
 ''' 
 Testing precision recall function for ranking retrieval
@@ -92,6 +95,13 @@ def test_store_prods():
     #     indices.append([prod[0] for prod in sorted_prods[i]])
     # print("indices = \n{0}".format(indices))
 
+def test_inf_prod():
+    train_perc = 80
+    n_clases = 0
+    path = "/mnt/nas/GrimaRepo/datasets/mscoco/coco2014/crops/cropsFeats"
+    train_data = cluster.load_classes(train_perc, path, "training", n_clases)
+    train_norm = [utils.normalize(train_vec) for train_vec in train_data]
+
 
 if __name__ == '__main__':
-	test_store_prods()
+	test_inf_prod()

@@ -40,6 +40,15 @@ def load_class(training_percentage, path, set_name):
         f = files[i]
         data = sio.loadmat(f)
         features = np.array(data["stored"], dtype=np.float32)
+        # Don't use infinity in any of the 4096 feature dimensions
+        for j in len(features):
+            if features[j] == float("inf"):
+                feautres[j] = 0
+                print(
+                    "Object {0} of {1} from class {2} has dim {3} inf".format(
+                        i, len(files), class_name, j
+                    )
+                )
         if objects is None:
             objects = features
         else:
@@ -76,7 +85,7 @@ def load_classes(training_percentage, path, set_name, n_classes):
     # DEBUGGING ONLY USE 10 CLASSES
     # for i in range(len(folders)):
     step = (n_classes * 5) / 100
-    for i in range(n_classes):
+    for i in range(20, n_classes):
         percentage = (i * 100) / n_classes
         print("Reading class number {0} from {1} ({2}%) ...".format(
                 i, n_classes, percentage
